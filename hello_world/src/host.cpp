@@ -17,6 +17,7 @@
 #include "xcl2.hpp"
 #include <algorithm>
 #include <vector>
+#include <sys/time.h>
 #define DATA_SIZE 4096
 
 static struct timeval begin_tv; //We only allow sequentially measurements
@@ -69,7 +70,7 @@ int main(int argc, char** argv) {
         source_sw_results[i] = source_in1[i] + source_in2[i];
         source_hw_results[i] = 0;
     }
-    std::cout << "CPU computation latencies: " << eval_time() << "us";
+    std::cout << "CPU computation latencies: " << eval_time() << "us"<< std::endl;
 
     // OPENCL HOST CODE AREA START
     // get_xil_devices() is a utility API which will find the xilinx
@@ -131,7 +132,7 @@ int main(int argc, char** argv) {
     OCL_CHECK(err, err = q.enqueueMigrateMemObjects({buffer_output}, CL_MIGRATE_MEM_OBJECT_HOST));
     q.finish();
     // OPENCL HOST CODE AREA END
-    std::cout << "FPGA computation (+data transfer) latencies: " << eval_time() << "us";
+    std::cout << "FPGA computation (+data transfer) latencies: " << eval_time() << "us" <<std::endl;
 
     // Compare the results of the Device to the simulation
     bool match = true;
