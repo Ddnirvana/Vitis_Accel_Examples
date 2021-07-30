@@ -19,6 +19,19 @@
 #include <vector>
 #define DATA_SIZE 4096
 
+static struct timeval begin_tv; //We only allow sequentially measurements
+
+void begin_time(){
+	gettimeofday(&begin_tv,NULL);
+	return;
+}
+unsigned long eval_time(){
+	struct timeval end_tv;
+	gettimeofday(&end_tv,NULL);
+
+	return (1000000 * end_tv.tv_sec + end_tv.tv_usec) - (1000000 * begin_tv.tv_sec + begin_tv.tv_usec);
+}
+
 int main(int argc, char** argv) {
     if (argc != 2) {
         std::cout << "Usage: " << argv[0] << " <XCLBIN File>" << std::endl;
@@ -50,10 +63,13 @@ int main(int argc, char** argv) {
     // Create the test data
     std::generate(source_in1.begin(), source_in1.end(), std::rand);
     std::generate(source_in2.begin(), source_in2.end(), std::rand);
+
+    begin_time();
     for (int i = 0; i < DATA_SIZE; i++) {
         source_sw_results[i] = source_in1[i] + source_in2[i];
         source_hw_results[i] = 0;
     }
+    std::cout << "CPU computation latencies: " << eval_time() << "us";
 
     // OPENCL HOST CODE AREA START
     // get_xil_devices() is a utility API which will find the xilinx
@@ -104,6 +120,7 @@ int main(int argc, char** argv) {
     // Copy input data to device global memory
     OCL_CHECK(err, err = q.enqueueMigrateMemObjects({buffer_in1, buffer_in2}, 0 /* 0 means from host*/));
 
+    begin_time();
     // Launch the Kernel
     // For HLS kernels global and local size is always (1,1,1). So, it is
     // recommended
@@ -114,6 +131,7 @@ int main(int argc, char** argv) {
     OCL_CHECK(err, err = q.enqueueMigrateMemObjects({buffer_output}, CL_MIGRATE_MEM_OBJECT_HOST));
     q.finish();
     // OPENCL HOST CODE AREA END
+    std::cout << "FPGA computation (+data transfer) latencies: " << eval_time() << "us";
 
     // Compare the results of the Device to the simulation
     bool match = true;
