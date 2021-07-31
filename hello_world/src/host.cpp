@@ -19,7 +19,7 @@
 #include <vector>
 #include <sys/time.h>
 #define DATA_SIZE 4096
-#define COMP_LOOP 10
+#define COMP_LOOP 1
 
 static struct timeval begin_tv; //We only allow sequentially measurements
 
