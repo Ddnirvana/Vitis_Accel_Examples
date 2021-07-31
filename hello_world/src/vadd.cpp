@@ -92,6 +92,19 @@ execute:
     }
 }
 
+static void compute_mul(hls::stream<hls::vector<unsigned int, PARALLEL> >& in1_stream,
+                        hls::stream<hls::vector<unsigned int, PARALLEL> >& in2_stream,
+                        hls::stream<hls::vector<unsigned int, PARALLEL> >& out_stream,
+                        int vSize) {
+// The kernel is operating with SIMD vectors of PARALLEL integers. The + operator performs
+// an element-wise add, resulting in PARALLEL parallel additions.
+execute:
+    for (int i = 0; i < vSize; i++) {
+#pragma HLS LOOP_TRIPCOUNT min = c_size max = c_size
+        out_stream << (in1_stream.read() x in2_stream.read());
+    }
+}
+
 static void store_result(hls::vector<unsigned int, PARALLEL>* out,
                          hls::stream<hls::vector<unsigned int, PARALLEL> >& out_stream,
                          int vSize) {
@@ -124,7 +137,8 @@ void vadd(hls::vector<unsigned int, PARALLEL>* in1,
 
     static hls::stream<hls::vector<unsigned int, PARALLEL> > in1_stream("input_stream_1");
     static hls::stream<hls::vector<unsigned int, PARALLEL> > in2_stream("input_stream_2");
-    static hls::stream<hls::vector<unsigned int, PARALLEL> > out_stream("output_stream");
+    static hls::stream<hls::vector<unsigned int, PARALLEL> > add_out_stream("output_stream");
+    static hls::stream<hls::vector<unsigned int, PARALLEL> > mul_out_stream("output_stream");
 
     // Since PARALLEL values are processed
     // in parallel per loop iteration, the for loop only needs to iterate 'size / PARALLEL' times.
@@ -134,7 +148,16 @@ void vadd(hls::vector<unsigned int, PARALLEL>* in1,
 
     load_input(in1, in1_stream, vSize);
     load_input(in2, in2_stream, vSize);
-    compute_add(in1_stream, in2_stream, out_stream, vSize);
-    store_result(out, out_stream, vSize);
+    compute_add(in1_stream, in2_stream, add_out_stream, vSize);
+    compute_add(in1_stream, in2_stream, add_out_stream, vSize);
+    compute_add(in1_stream, in2_stream, add_out_stream, vSize);
+    compute_add(in1_stream, in2_stream, add_out_stream, vSize);
+    compute_add(in1_stream, in2_stream, add_out_stream, vSize);
+    compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
+    compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
+    compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
+    compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
+    compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
+    store_result(out, add_stream, vSize);
 }
 }
