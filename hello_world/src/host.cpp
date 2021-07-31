@@ -19,6 +19,7 @@
 #include <vector>
 #include <sys/time.h>
 #define DATA_SIZE 4096
+#define COMP_LOOP 100
 
 static struct timeval begin_tv; //We only allow sequentially measurements
 
@@ -65,10 +66,15 @@ int main(int argc, char** argv) {
     std::generate(source_in1.begin(), source_in1.end(), std::rand);
     std::generate(source_in2.begin(), source_in2.end(), std::rand);
 
+    for (int count_loop=0; count_loop < COMP_LOOP; count_loop++){
+    	    source_hw_results[i] = 0;
+    }
+
     begin_time();
-    for (int i = 0; i < DATA_SIZE; i++) {
-        source_sw_results[i] = source_in1[i] + source_in2[i];
-        source_hw_results[i] = 0;
+    for (int count_loop=0; count_loop < COMP_LOOP; count_loop++){
+    	for (int i = 0; i < DATA_SIZE; i++) {
+    	    source_sw_results[i] = source_in1[i] + source_in2[i];
+    	}
     }
     std::cout << "CPU computation latencies: " << eval_time() << "us"<< std::endl;
 
@@ -122,11 +128,13 @@ int main(int argc, char** argv) {
     OCL_CHECK(err, err = q.enqueueMigrateMemObjects({buffer_in1, buffer_in2}, 0 /* 0 means from host*/));
 
     begin_time();
-    // Launch the Kernel
-    // For HLS kernels global and local size is always (1,1,1). So, it is
-    // recommended
-    // to always use enqueueTask() for invoking HLS kernel
-    OCL_CHECK(err, err = q.enqueueTask(krnl_vector_add));
+    for (int count_loop=0; count_loop < COMP_LOOP; count_loop++){
+    	// Launch the Kernel
+    	// For HLS kernels global and local size is always (1,1,1). So, it is
+    	// recommended
+    	// to always use enqueueTask() for invoking HLS kernel
+    	OCL_CHECK(err, err = q.enqueueTask(krnl_vector_add));
+    }
 
     // Copy Result from Device Global Memory to Host Local Memory
     OCL_CHECK(err, err = q.enqueueMigrateMemObjects({buffer_output}, CL_MIGRATE_MEM_OBJECT_HOST));
