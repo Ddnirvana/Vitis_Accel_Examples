@@ -64,7 +64,7 @@ Input Vector 2 from Global Memory --->|             |      |__|
 #include "assert.h"
 
 #define DATA_SIZE 409600
-#define PARALLEL 512
+#define PARALLEL 128
 
 // TRIPCOUNT identifier
 const int c_size = DATA_SIZE;
