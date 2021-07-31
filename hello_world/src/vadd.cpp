@@ -101,7 +101,7 @@ static void compute_mul(hls::stream<hls::vector<unsigned int, PARALLEL> >& in1_s
 execute:
     for (int i = 0; i < vSize; i++) {
 #pragma HLS LOOP_TRIPCOUNT min = c_size max = c_size
-        out_stream << (in1_stream.read() x in2_stream.read());
+        out_stream << (in1_stream.read() * in2_stream.read());
     }
 }
 

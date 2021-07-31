@@ -91,19 +91,19 @@ int main(int argc, char** argv) {
     	}
 	//MUL
     	for (int i = 0; i < DATA_SIZE; i++) {
-    	    source_mul_sw_results[i] = source_in1[i] x source_in2[i];
+    	    source_mul_sw_results[i] = source_in1[i] * source_in2[i];
     	}
     	for (int i = 0; i < DATA_SIZE; i++) {
-    	    source_mul_sw_results[i] = source_in1[i] x source_in2[i];
+    	    source_mul_sw_results[i] = source_in1[i] * source_in2[i];
     	}
     	for (int i = 0; i < DATA_SIZE; i++) {
-    	    source_mul_sw_results[i] = source_in1[i] x source_in2[i];
+    	    source_mul_sw_results[i] = source_in1[i] * source_in2[i];
     	}
     	for (int i = 0; i < DATA_SIZE; i++) {
-    	    source_mul_sw_results[i] = source_in1[i] x source_in2[i];
+    	    source_mul_sw_results[i] = source_in1[i] * source_in2[i];
     	}
     	for (int i = 0; i < DATA_SIZE; i++) {
-    	    source_mul_sw_results[i] = source_in1[i] x source_in2[i];
+    	    source_mul_sw_results[i] = source_in1[i] * source_in2[i];
     	}
     }
     std::cout << "CPU computation latencies: " << eval_time() << "us"<< std::endl;
