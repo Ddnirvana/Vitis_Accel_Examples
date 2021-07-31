@@ -158,6 +158,6 @@ void vadd(hls::vector<unsigned int, PARALLEL>* in1,
     compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
     compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
     compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
-    store_result(out, add_stream, vSize);
+    store_result(out, add_out_stream, vSize);
 }
 }
