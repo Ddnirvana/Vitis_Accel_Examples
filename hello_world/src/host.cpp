@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
     std::generate(source_in1.begin(), source_in1.end(), std::rand);
     std::generate(source_in2.begin(), source_in2.end(), std::rand);
 
-    for (int count_loop=0; count_loop < COMP_LOOP; count_loop++){
+    for (int i = 0; i < DATA_SIZE; i++) {
     	    source_hw_results[i] = 0;
     }
 
