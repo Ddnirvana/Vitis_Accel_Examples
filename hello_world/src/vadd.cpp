@@ -63,8 +63,8 @@ Input Vector 2 from Global Memory --->|             |      |__|
 #include <hls_stream.h>
 #include "assert.h"
 
-#define DATA_SIZE 4096
-#define PARALLEL 128
+#define DATA_SIZE 409600
+#define PARALLEL 512
 
 // TRIPCOUNT identifier
 const int c_size = DATA_SIZE;
@@ -148,6 +148,7 @@ void vadd(hls::vector<unsigned int, PARALLEL>* in1,
 
     load_input(in1, in1_stream, vSize);
     load_input(in2, in2_stream, vSize);
+#if 0
     compute_add(in1_stream, in2_stream, add_out_stream, vSize);
     compute_add(in1_stream, in2_stream, add_out_stream, vSize);
     compute_add(in1_stream, in2_stream, add_out_stream, vSize);
@@ -157,7 +158,8 @@ void vadd(hls::vector<unsigned int, PARALLEL>* in1,
     compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
     compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
     compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
+#endif
     compute_mul(in1_stream, in2_stream, mul_out_stream, vSize);
-    store_result(out, add_out_stream, vSize);
+    store_result(out, mul_out_stream, vSize);
 }
 }

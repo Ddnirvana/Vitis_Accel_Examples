@@ -18,7 +18,7 @@
 #include <algorithm>
 #include <vector>
 #include <sys/time.h>
-#define DATA_SIZE 4096
+#define DATA_SIZE 409600
 #define COMP_LOOP 1
 
 static struct timeval begin_tv; //We only allow sequentially measurements
@@ -73,6 +73,7 @@ int main(int argc, char** argv) {
 
     begin_time();
     for (int count_loop=0; count_loop < COMP_LOOP; count_loop++){
+#if 0
 	//Add
     	for (int i = 0; i < DATA_SIZE; i++) {
     	    source_sw_results[i] = source_in1[i] + source_in2[i];
@@ -89,10 +90,12 @@ int main(int argc, char** argv) {
     	for (int i = 0; i < DATA_SIZE; i++) {
     	    source_sw_results[i] = source_in1[i] + source_in2[i];
     	}
+#endif
 	//MUL
     	for (int i = 0; i < DATA_SIZE; i++) {
-    	    source_mul_sw_results[i] = source_in1[i] * source_in2[i];
+    	    source_sw_results[i] = source_in1[i] * source_in2[i];
     	}
+#if 0
     	for (int i = 0; i < DATA_SIZE; i++) {
     	    source_mul_sw_results[i] = source_in1[i] * source_in2[i];
     	}
@@ -105,6 +108,7 @@ int main(int argc, char** argv) {
     	for (int i = 0; i < DATA_SIZE; i++) {
     	    source_mul_sw_results[i] = source_in1[i] * source_in2[i];
     	}
+#endif
     }
     std::cout << "CPU computation latencies: " << eval_time() << "us"<< std::endl;
 
