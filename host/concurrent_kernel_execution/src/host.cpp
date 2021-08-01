@@ -411,7 +411,6 @@ void dd_single_test(cl::Context& context,
     // devices
 
     //Scale
-    begin_time();
     const int matrix_scale_factor = 2;
     OCL_CHECK(err, err = kernel_mscale.setArg(0, buffer_a));
     OCL_CHECK(err, err = kernel_mscale.setArg(1, matrix_scale_factor));
@@ -421,6 +420,7 @@ void dd_single_test(cl::Context& context,
     vector<cl::Event> kernel_events(1);
 
 
+    begin_time();
     //printf("[Ordered Queue 1]: Enqueueing scale kernel\n");
     OCL_CHECK(err, err = ordered_queue.enqueueNDRangeKernel(kernel_mscale, offset, global, local, nullptr,
                                                              &kernel_events[0]));
@@ -580,6 +580,7 @@ int main(int argc, char** argv) {
     // Allocate Buffer in Global Memory
     // Buffers are allocated using CL_MEM_USE_HOST_PTR for efficient memory and
     // Device-to-host communication
+#if 0 //use bytes level parallel 
     OCL_CHECK(err,
               cl::Buffer buffer_a(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, size_in_bytes, A.data(), &err));
     OCL_CHECK(err, cl::Buffer buffer_b(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, size_in_bytes, B.data(), &err));
@@ -587,6 +588,16 @@ int main(int argc, char** argv) {
     OCL_CHECK(err, cl::Buffer buffer_d(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, size_in_bytes, D.data(), &err));
     OCL_CHECK(err, cl::Buffer buffer_e(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, size_in_bytes, E.data(), &err));
     OCL_CHECK(err, cl::Buffer buffer_f(context, CL_MEM_WRITE_ONLY, size_in_bytes, nullptr, &err));
+#else
+    //use vector
+    OCL_CHECK(err,
+              cl::Buffer buffer_a(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, vector_size_bytes, A.data(), &err));
+    OCL_CHECK(err, cl::Buffer buffer_b(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, vector_size_bytes, B.data(), &err));
+    OCL_CHECK(err, cl::Buffer buffer_c(context, CL_MEM_WRITE_ONLY, vector_size_bytes, nullptr, &err));
+    OCL_CHECK(err, cl::Buffer buffer_d(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, vector_size_bytes, D.data(), &err));
+    OCL_CHECK(err, cl::Buffer buffer_e(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, vector_size_bytes, E.data(), &err));
+    OCL_CHECK(err, cl::Buffer buffer_f(context, CL_MEM_WRITE_ONLY, vector_size_bytes, nullptr, &err));
+#endif
 
     // Use multiple command queues to execute the kernels
     multiple_command_queues(context, device, kernel_mscale, kernel_madd, kernel_mmult, buffer_a, buffer_b, buffer_c,

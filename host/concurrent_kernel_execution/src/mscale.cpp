@@ -14,12 +14,25 @@
 * under the License.
 */
 
+
 #define MAX_DIM 160
+#define PARALLEL 64
 
 // Tripcount identifiers
 const int c_size = MAX_DIM;
 
+static void store_result(hls::vector<unsigned int, PARALLEL>* out,
+                         hls::stream<hls::vector<unsigned int, PARALLEL> >& out_stream,
+                         int vSize) {
+mem_wr:
+    for (int i = 0; i < vSize; i++) {
+#pragma HLS LOOP_TRIPCOUNT min = c_size max = c_size
+        out[i] = out_stream.read();
+    }
+}
+
 extern "C" {
+#if 0
 void mscale(int* inout_r, const int scale, const int dim0, const int dim1) {
     int temp[MAX_DIM * MAX_DIM];
 
@@ -34,4 +47,29 @@ mscale_write:
 #pragma HLS LOOP_TRIPCOUNT min = c_size* c_size max = c_size * c_size
         inout_r[i] = temp[i];
 }
+#else
+
+void mscale(hls::vector<unsigned int, PARALLEL>* inout_r,
+		const int scale,
+	  const int dim0,
+	  const int dim1) 
+{
+#pragma HLS INTERFACE m_axi port = inout_r bundle = gmem0
+    static hls::stream<hls::vector<unsigned int, PARALLEL> > in_stream("input_stream_1");
+    static hls::stream<hls::vector<unsigned int, PARALLEL> > out_stream("output_stream");
+
+    assert(dim0*dim1/PARALLEL == 0);
+    int vSize = dim0*dim1/PARALLEL;
+#pragma HLS dataflow
+
+    for (int i = 0; i < vSize; i++) {
+#pragma HLS LOOP_TRIPCOUNT min = c_size max = c_size
+        in_stream << (in[i] * scale);
+    }
+
+    store_result(inout_r, out_sream, vSize);
+
+}
+
+#endif
 }
