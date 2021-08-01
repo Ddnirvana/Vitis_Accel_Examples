@@ -375,6 +375,12 @@ void out_of_order_queue(cl::Context& context,
     verify_results(C, F);
 }
 
+extern "C" {
+extern void host_mscale(int* inout_r, const int scale, const int dim0, const int dim1);
+extern void host_madd(int* c, int* a, int* b, const int dim0, const int dim1);
+extern void host_mmult(int* c, int* a, const int* b, const int dim0, const int dim1);
+}
+
 void dd_single_test(cl::Context& context,
                         cl::Device& device,
                         cl::Kernel& kernel_mscale,
@@ -424,16 +430,19 @@ void dd_single_test(cl::Context& context,
     //Dd: eval the end time
     std::cout << "single: FPGA computation (mscale) latencies: " << eval_time() << "us" <<std::endl;
 
+    const size_t array_size = MAT_DIM0 * MAT_DIM1;
 
     vector<int, aligned_allocator<int> > host_A(array_size, 1);
     vector<int, aligned_allocator<int> > host_B(array_size, 1);
+    vector<int, aligned_allocator<int> > host_C(array_size, 1);
     vector<int, aligned_allocator<int> > host_D(array_size, 1);
     vector<int, aligned_allocator<int> > host_E(array_size, 1);
+    vector<int, aligned_allocator<int> > host_F(array_size, 1);
 
     begin_time();
     host_mscale(host_A.data(), matrix_scale_factor, MAT_DIM0, MAT_DIM1);
     //Dd: eval the end time
-    std::cout << "single: FPGA computation (mscale) latencies: " << eval_time() << "us" <<std::endl;
+    std::cout << "single: CPU computation (mscale) latencies: " << eval_time() << "us" <<std::endl;
 
 
 
@@ -455,6 +464,10 @@ void dd_single_test(cl::Context& context,
     //Dd: eval the end time
     std::cout << "single: FPGA computation (addition) latencies: " << eval_time() << "us" <<std::endl;
 
+    begin_time();
+    host_madd(host_C.data(), host_A.data(), host_B.data(), MAT_DIM0, MAT_DIM1);
+    //Dd: eval the end time
+    std::cout << "single: CPU computation (madd) latencies: " << eval_time() << "us" <<std::endl;
 
     //Multiplex
     begin_time();
@@ -475,7 +488,12 @@ void dd_single_test(cl::Context& context,
     std::cout << "single: FPGA computation (multi) latencies: " << eval_time() << "us" <<std::endl;
 
     begin_time();
-    const size_t array_size = MAT_DIM0 * MAT_DIM1;
+    host_mmult(host_F.data(), host_D.data(), host_E.data(), MAT_DIM0, MAT_DIM1);
+    //Dd: eval the end time
+    std::cout << "single: CPU computation (mmult) latencies: " << eval_time() << "us" <<std::endl;
+
+    begin_time();
+    //const size_t array_size = MAT_DIM0 * MAT_DIM1;
     vector<int> A(array_size);
     vector<int> C(array_size);
     vector<int> F(array_size);
