@@ -14,12 +14,16 @@
 * under the License.
 */
 
+#include <hls_vector.h>
+#include <hls_stream.h>
+#include "assert.h"
 #define MAX_DIM 160
 #define PARALLEL 160
 
 // Tripcount identifiers
 const int c_size = MAX_DIM;
 
+#if 0
 static void load_input(hls::vector<unsigned int, PARALLEL>* in,
                        hls::stream<hls::vector<unsigned int, PARALLEL> >& inStream,
                        int vSize) {
@@ -40,22 +44,25 @@ mem_wr:
     }
 }
 //hls::vector<unsigned int, PARALLEL>* a
-static void compute(hls::vector<unsigned int, PARALLEL> & in1,
-                        hls::vector<unsigned int, PARALLEL> & in2,
+static void compute(hls::vector<unsigned int, PARALLEL> * in1,
+                        hls::vector<unsigned int, PARALLEL> * in2,
                         hls::stream<hls::vector<unsigned int, PARALLEL> >& out_stream,
-                        int vSize) {
+                        int vSize,
+			const int dim0, const int dim1) {
 // The kernel is operating with SIMD vectors of PARALLEL integers. The + operator performs
 // an element-wise add, resulting in PARALLEL parallel additions.
 
-	hls::vector<int, PARALLEL> local_in1(vSize);
-	hls::vector<int, PARALLEL> local_in2(vSize);
+	hls::vector<unsigned int, PARALLEL> local_in1(vSize);
+	hls::vector<unsigned int, PARALLEL> local_in2(vSize);
         hls::vector<unsigned int, PARALLEL> tmp_arr(1); // one entry
+#if 0
 mem_rd:
     for (int i = 0; i < vSize; i++) {
 #pragma HLS LOOP_TRIPCOUNT min = c_size max = c_size
 	    local_in1[i] = in1[i];
 	    local_in2[i] = in2[i];
     }
+#endif
 
 mmult1:
     for (int j = 0; j < dim1; ++j) {
@@ -64,22 +71,25 @@ mmult1:
         for (int i = 0; i < dim0; ++i) {
 #pragma HLS LOOP_TRIPCOUNT min = c_size max = c_size
 	    //Assume the second matrix (local_in2) is reversed
-	    tmp_arr = local_in1[j] * local_in2[i];
+	    tmp_arr[0] = in1[j] * in2[i];
         add3:
             int temp = 0;
-	    int * arr temp_arr.data();
+	    //int * arr = tmp_arr.data();
+	    #if 0
             for (int k = 0; k < dim1; ++k)
 #pragma HLS LOOP_TRIPCOUNT min = c_size max = c_size
-	    	temp += arr[k];
+	    	temp += tmp_arr[0][k];
+#endif
 
 	    out_stream << temp;
             //c[i + j * dim0] = temp;
         }
     }
 }
+#endif
 
 extern "C" {
-#if 0
+#if 1
 void mmult(int* c, int* a, const int* b, const int dim0, const int dim1) {
     int matA[MAX_DIM * MAX_DIM];
     int matB[MAX_DIM * MAX_DIM];
@@ -136,8 +146,8 @@ void mmult(hls::vector<unsigned int, PARALLEL>* c,
     load_input(b, in2_stream, vSize);
 #endif
 
-    compute(a, b, out_stream, vSize);
-    store_result(c, out_sream, vSize);
+    compute(a, b, out_stream, vSize, dim0, dim1);
+    store_result(c, out_stream, vSize);
 
 }
 #endif

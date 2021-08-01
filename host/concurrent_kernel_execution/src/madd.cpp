@@ -14,6 +14,9 @@
 * under the License.
 */
 
+#include <hls_vector.h>
+#include <hls_stream.h>
+#include "assert.h"
 #define MAX_DIM 160
 #define PARALLEL 64
 
@@ -86,14 +89,14 @@ void madd(hls::vector<unsigned int, PARALLEL>* c,
 	  const int dim0,
 	  const int dim1) 
 {
-#pragma HLS INTERFACE m_axi port = c bundle = gmem1
+#pragma HLS INTERFACE m_axi port = c bundle = gmem0
 #pragma HLS INTERFACE m_axi port = a bundle = gmem0
-#pragma HLS INTERFACE m_axi port = b bundle = gmem0
+#pragma HLS INTERFACE m_axi port = b bundle = gmem1
     static hls::stream<hls::vector<unsigned int, PARALLEL> > in1_stream("input_stream_1");
     static hls::stream<hls::vector<unsigned int, PARALLEL> > in2_stream("input_stream_2");
     static hls::stream<hls::vector<unsigned int, PARALLEL> > out_stream("output_stream");
 
-    assert(dim0*dim1/PARALLEL == 0);
+    assert(dim0*dim1%PARALLEL == 0);
     int vSize = dim0*dim1/PARALLEL;
 #pragma HLS dataflow
 
@@ -101,7 +104,7 @@ void madd(hls::vector<unsigned int, PARALLEL>* c,
     load_input(b, in2_stream, vSize);
 
     compute(in1_stream, in2_stream, out_stream, vSize);
-    store_result(c, out_sream, vSize);
+    store_result(c, out_stream, vSize);
 
 }
 #endif

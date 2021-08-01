@@ -591,12 +591,12 @@ int main(int argc, char** argv) {
 #else
     //use vector
     OCL_CHECK(err,
-              cl::Buffer buffer_a(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, vector_size_bytes, A.data(), &err));
-    OCL_CHECK(err, cl::Buffer buffer_b(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, vector_size_bytes, B.data(), &err));
-    OCL_CHECK(err, cl::Buffer buffer_c(context, CL_MEM_WRITE_ONLY, vector_size_bytes, nullptr, &err));
-    OCL_CHECK(err, cl::Buffer buffer_d(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, vector_size_bytes, D.data(), &err));
-    OCL_CHECK(err, cl::Buffer buffer_e(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, vector_size_bytes, E.data(), &err));
-    OCL_CHECK(err, cl::Buffer buffer_f(context, CL_MEM_WRITE_ONLY, vector_size_bytes, nullptr, &err));
+              cl::Buffer buffer_a(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, size_in_bytes, A.data(), &err));
+    OCL_CHECK(err, cl::Buffer buffer_b(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, size_in_bytes, B.data(), &err));
+    OCL_CHECK(err, cl::Buffer buffer_c(context, CL_MEM_WRITE_ONLY, size_in_bytes, nullptr, &err));
+    OCL_CHECK(err, cl::Buffer buffer_d(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, size_in_bytes, D.data(), &err));
+    OCL_CHECK(err, cl::Buffer buffer_e(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, size_in_bytes, E.data(), &err));
+    OCL_CHECK(err, cl::Buffer buffer_f(context, CL_MEM_WRITE_ONLY, size_in_bytes, nullptr, &err));
 #endif
 
     // Use multiple command queues to execute the kernels
