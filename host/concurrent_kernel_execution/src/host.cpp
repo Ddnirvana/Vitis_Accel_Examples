@@ -80,6 +80,7 @@
 #include <cstdio>
 #include <string>
 #include <vector>
+#include <sys/time.h>
 
 using std::find;
 using std::vector;
@@ -89,6 +90,18 @@ const int MAT_DIM1 = 640;
 size_t offset = 0;
 size_t global = 1;
 size_t local = 1;
+
+static struct timeval begin_tv;
+void begin_time() {
+	gettimeofday(&begin_tv, NULL);
+	return;
+}
+unsigned long eval_time(){
+	struct timeval end_tv;
+	gettimeofday(&end_tv, NULL);
+
+	return (1000000 * end_tv.tv_sec + end_tv.tv_usec) - (1000000 * begin_tv.tv_sec + begin_tv.tv_usec);
+}
 
 // An event callback function that prints the operations performed by the OpenCL
 // runtime.
@@ -176,7 +189,9 @@ void multiple_command_queues(cl::Context& context,
 
     vector<cl::Event> kernel_events(3);
 
-    printf("[Ordered Queue 1]: Enqueueing scale kernel\n");
+    begin_time();
+
+    //printf("[Ordered Queue 1]: Enqueueing scale kernel\n");
     OCL_CHECK(err, err = ordered_queue1.enqueueNDRangeKernel(kernel_mscale, offset, global, local, nullptr,
                                                              &kernel_events[0]));
 
@@ -188,7 +203,7 @@ void multiple_command_queues(cl::Context& context,
     OCL_CHECK(err, err = kernel_madd.setArg(3, MAT_DIM0));
     OCL_CHECK(err, err = kernel_madd.setArg(4, MAT_DIM1));
 
-    printf("[Ordered Queue 1]: Enqueueing addition kernel\n");
+    //printf("[Ordered Queue 1]: Enqueueing addition kernel\n");
     OCL_CHECK(
         err, err = ordered_queue1.enqueueNDRangeKernel(kernel_madd, offset, global, local, nullptr, &kernel_events[1]));
 
@@ -201,7 +216,7 @@ void multiple_command_queues(cl::Context& context,
     OCL_CHECK(err, err = kernel_mmult.setArg(3, MAT_DIM0));
     OCL_CHECK(err, err = kernel_mmult.setArg(4, MAT_DIM1));
 
-    printf("[Ordered Queue 2]: Enqueueing matrix multiplication kernel\n");
+    //printf("[Ordered Queue 2]: Enqueueing matrix multiplication kernel\n");
     OCL_CHECK(err, err = ordered_queue2.enqueueNDRangeKernel(kernel_mmult, offset, global, local, nullptr,
                                                              &kernel_events[2]));
     set_callback(kernel_events[2], "matrix multiplication");
@@ -212,24 +227,28 @@ void multiple_command_queues(cl::Context& context,
     vector<int> F(array_size);
 
     vector<cl::Event> transfer_events(3);
-    printf("[Ordered Queue 1]: Enqueueing Read Buffer A\n");
+    //printf("[Ordered Queue 1]: Enqueueing Read Buffer A\n");
     OCL_CHECK(err, err = ordered_queue1.enqueueReadBuffer(buffer_a, CL_FALSE, 0, size_in_bytes, A.data(), nullptr,
                                                           &transfer_events[0]));
     set_callback(transfer_events[0], "A");
 
-    printf("[Ordered Queue 1]: Enqueueing Read Buffer C\n");
+    //printf("[Ordered Queue 1]: Enqueueing Read Buffer C\n");
     OCL_CHECK(err, err = ordered_queue1.enqueueReadBuffer(buffer_c, CL_FALSE, 0, size_in_bytes, C.data(), nullptr,
                                                           &transfer_events[1]));
     set_callback(transfer_events[1], "C");
 
-    printf("[Ordered Queue 2]: Enqueueing Read Buffer F\n");
+    //printf("[Ordered Queue 2]: Enqueueing Read Buffer F\n");
     OCL_CHECK(err, err = ordered_queue2.enqueueReadBuffer(buffer_f, CL_FALSE, 0, size_in_bytes, F.data(), nullptr,
                                                           &transfer_events[2]));
     set_callback(transfer_events[2], "F");
 
-    printf("[Ordered Queue 1]: Waiting\n");
-    printf("[Ordered Queue 2]: Waiting\n");
+    //printf("[Ordered Queue 1]: Waiting\n");
+    //printf("[Ordered Queue 2]: Waiting\n");
     OCL_CHECK(err, err = cl::Event::waitForEvents(transfer_events));
+
+    //Dd: eval the end time
+    std::cout << "FPGA computation (ordered queue) latencies: " << eval_time() << "us" <<std::endl;
+
     verify_results(C, F);
 }
 
@@ -272,7 +291,11 @@ void out_of_order_queue(cl::Context& context,
     OCL_CHECK(err, err = kernel_mscale.setArg(2, MAT_DIM0));
     OCL_CHECK(err, err = kernel_mscale.setArg(3, MAT_DIM1));
 
-    printf("[OOO Queue]: Enqueueing scale kernel\n");
+    /*Dd: Sync prior operations and begin to log this execution */
+    ooo_queue.flush();
+    begin_time();
+
+    //printf("[OOO Queue]: Enqueueing scale kernel\n");
     OCL_CHECK(err, err = ooo_queue.enqueueNDRangeKernel(kernel_mscale, offset, global, local, nullptr, &ooo_events[0]));
     set_callback(ooo_events[0], "scale");
 
@@ -286,7 +309,7 @@ void out_of_order_queue(cl::Context& context,
     // This is an out of order queue, events can be executed in any order. Since
     // this call depends on the results of the previous call we must pass the
     // event object from the previous call to this kernel's event wait list.
-    printf("[OOO Queue]: Enqueueing addition kernel (Depends on scale)\n");
+    //printf("[OOO Queue]: Enqueueing addition kernel (Depends on scale)\n");
 
     kernel_wait_events.resize(0);
     kernel_wait_events.push_back(ooo_events[0]);
@@ -305,7 +328,7 @@ void out_of_order_queue(cl::Context& context,
     // This call does not depend on previous calls so we are passing nullptr
     // into the event wait list. The runtime should schedule this kernel in
     // parallel to the previous calls.
-    printf("[OOO Queue]: Enqueueing matrix multiplication kernel\n");
+    //printf("[OOO Queue]: Enqueueing matrix multiplication kernel\n");
     OCL_CHECK(err, err = ooo_queue.enqueueNDRangeKernel(kernel_mmult, offset, global, local,
                                                         nullptr, // Does not depend on previous call
                                                         &ooo_events[2]));
@@ -317,14 +340,14 @@ void out_of_order_queue(cl::Context& context,
     vector<int> F(array_size);
 
     // Depends on the addition kernel
-    printf("[OOO Queue]: Enqueueing Read Buffer A (depends on addition)\n");
+    //printf("[OOO Queue]: Enqueueing Read Buffer A (depends on addition)\n");
     kernel_wait_events.resize(0);
     kernel_wait_events.push_back(ooo_events[1]);
     OCL_CHECK(err, err = ooo_queue.enqueueReadBuffer(buffer_a, CL_FALSE, 0, size_in_bytes, A.data(),
                                                      &kernel_wait_events, &ooo_events[3]));
     set_callback(ooo_events[3], "A");
 
-    printf("[OOO Queue]: Enqueueing Read Buffer C (depends on addition)\n");
+    //printf("[OOO Queue]: Enqueueing Read Buffer C (depends on addition)\n");
     kernel_wait_events.resize(0);
     kernel_wait_events.push_back(ooo_events[1]);
     OCL_CHECK(err, err = ooo_queue.enqueueReadBuffer(buffer_c, CL_FALSE, 0, size_in_bytes, C.data(),
@@ -332,9 +355,11 @@ void out_of_order_queue(cl::Context& context,
     set_callback(ooo_events[4], "C");
 
     // Depends on the matrix multiplication kernel
+#if 0
     printf(
         "[OOO Queue]: Enqueueing Read Buffer F (depends on matrix "
         "multiplication)\n");
+#endif
     kernel_wait_events.resize(0);
     kernel_wait_events.push_back(ooo_events[2]);
     OCL_CHECK(err, err = ooo_queue.enqueueReadBuffer(buffer_f, CL_FALSE, 0, size_in_bytes, F.data(),
@@ -344,6 +369,9 @@ void out_of_order_queue(cl::Context& context,
     // Block until all operations have completed
     ooo_queue.flush();
     ooo_queue.finish();
+    //Dd: eval the end time
+    std::cout << "FPGA computation (out-of-order queue) latencies: " << eval_time() << "us" <<std::endl;
+
     verify_results(C, F);
 }
 
