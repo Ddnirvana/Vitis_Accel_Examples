@@ -84,8 +84,8 @@
 using std::find;
 using std::vector;
 
-const int MAT_DIM0 = 16;
-const int MAT_DIM1 = 16;
+const int MAT_DIM0 = 640;
+const int MAT_DIM1 = 640;
 size_t offset = 0;
 size_t global = 1;
 size_t local = 1;
