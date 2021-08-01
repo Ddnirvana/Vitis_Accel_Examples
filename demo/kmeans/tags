@@ -1,0 +1,147 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BUILD_DIR	Makefile	/^BUILD_DIR := .\/build_dir.$(TARGET).$(XSA)$/;"	m
+B_NAME	utils.mk	/^	B_NAME = $(B_TEMP)\/$(DEVICE)$/;"	m
+B_NAME	utils.mk	/^	B_NAME = $(shell dirname $(DEVICE))$/;"	m
+B_TEMP	utils.mk	/^B_TEMP = `$(XF_PROJ_ROOT)\/common\/utility\/parse_platform_list.py $(DEVICE)`$/;"	m
+CMD_ARGS	Makefile	/^CMD_ARGS = -x $(BUILD_DIR)\/krnl_kmeans.xclbin -i .\/data\/100 -c .\/data\/100.gold_c10 -n 10$/;"	m
+COMMON_REPO	Makefile	/^COMMON_REPO ?= $(shell bash -c 'export MK_PATH=$(MK_PATH); echo $${MK_PATH%demo\/kmeans\/*}')$/;"	m
+CONST_NCLUSTERS	src/krnl_kmeans.h	25;"	d
+CONST_NFEATURES	src/krnl_kmeans.h	26;"	d
+CONST_NPOINTS	src/krnl_kmeans.h	24;"	d
+CP	Makefile	/^CP = cp -rf$/;"	m
+CXX	utils.mk	/^CXX := $(XILINX_VITIS)\/gnu\/aarch32\/lin\/gcc-arm-linux-gnueabi\/bin\/arm-linux-gnueabihf-g++$/;"	m
+CXX	utils.mk	/^CXX := $(XILINX_VITIS)\/gnu\/aarch64\/lin\/aarch64-linux\/bin\/aarch64-linux-gnu-g++$/;"	m
+CXX	utils.mk	/^CXX := g++$/;"	m
+DEBUG	utils.mk	/^DEBUG := no$/;"	m
+DEV_FAM	utils.mk	/^	DEV_FAM = 7Series$/;"	m
+DEV_FAM	utils.mk	/^	DEV_FAM = Ultrascale$/;"	m
+ECHO	utils.mk	/^ECHO:= @echo$/;"	m
+EMCONFIG_DIR	Makefile	/^EMCONFIG_DIR = $(TEMP_DIR)$/;"	m
+EXECUTABLE	Makefile	/^EXECUTABLE = .\/kmeans$/;"	m
+FLT_MAX	src/host.cpp	52;"	d	file:
+FLT_MAX	src/kmeans.h	26;"	d
+FLT_MAX	src/kmeans_clustering_cmodel.c	56;"	d	file:
+FPGA_KMEANS	src/fpga_kmeans.h	/^class FPGA_KMEANS {$/;"	c
+HOST_ARCH	Makefile	/^HOST_ARCH := x86$/;"	m
+LAUNCH_EMULATOR	Makefile	/^LAUNCH_EMULATOR = $(PACKAGE_OUT)\/launch_$(TARGET).sh$/;"	m
+L_CLUSTERS_SZ	src/krnl_kmeans.cpp	23;"	d	file:
+MAX_VALUE	src/krnl_kmeans.cpp	21;"	d	file:
+MK_PATH	Makefile	/^MK_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))$/;"	m
+NK	config.mk	/^NK:= 2$/;"	m
+NUM_CU	src/kmeans_config.h	19;"	d
+PACKAGE_OUT	Makefile	/^PACKAGE_OUT = .\/package.$(TARGET)$/;"	m
+PARALLEL_POINTS	src/kmeans_config.h	27;"	d
+PARALLEL_POINTS	src/krnl_kmeans.cpp	26;"	d	file:
+PP	config.mk	/^PP:= 96$/;"	m
+PROFILE	utils.mk	/^PROFILE := no$/;"	m
+PWD	Makefile	/^PWD = $(shell readlink -f .)$/;"	m
+RANDOM_MAX	src/kmeans_clustering_cmodel.c	53;"	d	file:
+RESULT_STRING	Makefile	/^RESULT_STRING = TEST PASSED$/;"	m
+RM	utils.mk	/^RM = rm -f$/;"	m
+RMDIR	utils.mk	/^RMDIR = rm -rf$/;"	m
+RUN_APP_SCRIPT	Makefile	/^RUN_APP_SCRIPT = .\/run_app.sh$/;"	m
+SD_IMAGE_FILE	utils.mk	/^SD_IMAGE_FILE := $(EDGE_COMMON_SW)\/Image$/;"	m
+SD_IMAGE_FILE	utils.mk	/^SD_IMAGE_FILE := $(EDGE_COMMON_SW)\/uImage$/;"	m
+SYSROOT	Makefile	/^SYSROOT := $/;"	m
+SYSROOT	utils.mk	/^SYSROOT := $(EDGE_COMMON_SW)\/sysroots\/cortexa72-cortexa53-xilinx-linux$/;"	m
+SYSROOT	utils.mk	/^SYSROOT := $(EDGE_COMMON_SW)\/sysroots\/cortexa9t2hf-neon-xilinx-linux-gnueabi\/$/;"	m
+TARGET	Makefile	/^TARGET := hw$/;"	m
+TEMP_DIR	Makefile	/^TEMP_DIR := .\/_x.$(TARGET).$(XSA)$/;"	m
+TIMER_INIT	src/timer.h	44;"	d
+TIMER_INIT	src/timer.h	54;"	d
+TIMER_REPORT	src/timer.h	58;"	d
+TIMER_REPORT_MS	src/timer.h	52;"	d
+TIMER_START	src/timer.h	47;"	d
+TIMER_START	src/timer.h	55;"	d
+TIMER_STOP	src/timer.h	50;"	d
+TIMER_STOP	src/timer.h	56;"	d
+TIMER_STOP_ID	src/timer.h	51;"	d
+TIMER_STOP_ID	src/timer.h	57;"	d
+VPP	Makefile	/^VPP := v++$/;"	m
+VPP_PFLAGS	Makefile	/^VPP_PFLAGS := $/;"	m
+XCL_EMULATION_MODE	Makefile	/^	XCL_EMULATION_MODE=$(TARGET) $(EXECUTABLE) $(CMD_ARGS)$/;"	m
+XF_PROJ_ROOT	Makefile	/^XF_PROJ_ROOT = $(shell readlink -f $(COMMON_REPO))$/;"	m
+XSA	Makefile	/^XSA := $(call device2xsa, $(DEVICE))$/;"	m
+XSA	Makefile	/^XSA := $/;"	m
+_CRT_SECURE_NO_DEPRECATE	src/host.cpp	49;"	d	file:
+_H_FPGA_KMEANS_	src/fpga_kmeans.h	18;"	d
+_H_FUZZY_KMEANS	src/kmeans.h	23;"	d
+__USE_OPENCL__	src/kmeans_config.h	23;"	d
+cPerfTimer	src/timer.h	/^    cPerfTimer() { initialize(); }$/;"	f	struct:cPerfTimer
+cPerfTimer	src/timer.h	/^struct cPerfTimer {$/;"	s
+c_ld_clusters	src/krnl_kmeans.cpp	/^const unsigned int c_ld_clusters = CONST_NFEATURES * CONST_NCLUSTERS \/ 16;$/;"	v
+c_ld_features	src/krnl_kmeans.cpp	/^const unsigned int c_ld_features = CONST_NFEATURES * PARALLEL_POINTS \/ 16;$/;"	v
+c_nclusters	src/krnl_kmeans.cpp	/^const unsigned int c_nclusters = CONST_NCLUSTERS;$/;"	v
+c_nfeatures	src/krnl_kmeans.cpp	/^const unsigned int c_nfeatures = CONST_NFEATURES;$/;"	v
+c_num_iter	src/krnl_kmeans.cpp	/^const unsigned int c_num_iter = CONST_NPOINTS \/ (PARALLEL_POINTS * NUM_CU);$/;"	v
+c_st_centers	src/krnl_kmeans.cpp	/^const unsigned int c_st_centers = CONST_NFEATURES * CONST_NCLUSTERS \/ 16;$/;"	v
+c_st_members	src/krnl_kmeans.cpp	/^const unsigned int c_st_members = PARALLEL_POINTS \/ 16;$/;"	v
+calculate_scale_factor	src/fpga_kmeans.cpp	/^static float calculate_scale_factor(float* mem, int size) {$/;"	f	file:
+cluster	src/host.cpp	/^void cluster(FPGA_KMEANS* fpga,$/;"	f
+compute_memberships	src/krnl_kmeans.cpp	/^void compute_memberships(hls::stream<unsigned int> index_str[PARALLEL_POINTS],$/;"	f
+compute_new_centers	src/krnl_kmeans.cpp	/^void compute_new_centers(hls::stream<unsigned int> index_str[PARALLEL_POINTS],$/;"	f
+device2xsa	utils.mk	/^device2xsa = $(strip $(patsubst %.xpfm, % , $(shell basename $(DEVICE))))$/;"	m
+dist	src/krnl_kmeans.cpp	/^    unsigned long dist;$/;"	m	struct:point_dist_t	file:
+euclid_dist_2	src/kmeans_clustering_cmodel.c	/^__inline float euclid_dist_2(float* pt1, float* pt2, int numdims) {$/;"	f
+find_nearest_point	src/kmeans_clustering_cmodel.c	/^int find_nearest_point(float* pt, \/* [nfeatures] *\/$/;"	f
+fpga_kmeans_allocate	src/fpga_kmeans.cpp	/^int FPGA_KMEANS::fpga_kmeans_allocate(int n_points, int n_features, int n_clusters) {$/;"	f	class:FPGA_KMEANS
+fpga_kmeans_clustering	src/fpga_kmeans.cpp	/^float** FPGA_KMEANS::fpga_kmeans_clustering(float** feature, \/\/ in: [npoints][nfeatures]$/;"	f	class:FPGA_KMEANS
+fpga_kmeans_compute	src/fpga_kmeans.cpp	/^void FPGA_KMEANS::fpga_kmeans_compute(float** feature, \/\/ in: [npoints][nfeatures]$/;"	f	class:FPGA_KMEANS
+fpga_kmeans_deallocateMemory	src/fpga_kmeans.cpp	/^int FPGA_KMEANS::fpga_kmeans_deallocateMemory() {$/;"	f	class:FPGA_KMEANS
+fpga_kmeans_init	src/fpga_kmeans.cpp	/^int FPGA_KMEANS::fpga_kmeans_init(std::string& binaryFile) {$/;"	f	class:FPGA_KMEANS
+fpga_kmeans_print_report	src/fpga_kmeans.cpp	/^int FPGA_KMEANS::fpga_kmeans_print_report() {$/;"	f	class:FPGA_KMEANS
+get_ms	src/timer.h	/^    double get_ms() { return 1000 * m_total.count(); }$/;"	f	struct:cPerfTimer
+index	src/krnl_kmeans.cpp	/^    index_t index;$/;"	m	struct:point_dist_t	file:
+index_t	src/krnl_kmeans.cpp	/^typedef ap_uint<7> index_t;$/;"	t	file:
+init	src/krnl_kmeans.cpp	/^    void init() {$/;"	f	struct:point_dist_t
+initialize	src/timer.h	/^    void initialize() { m_total = std::chrono::duration<double>(0.0); }$/;"	f	struct:cPerfTimer
+kmeans	src/krnl_kmeans.cpp	/^void kmeans(ap_int<512>* features,$/;"	f
+kmeans_clustering_cmodel	src/kmeans_clustering_cmodel.c	/^float** kmeans_clustering_cmodel(float** feature, \/* in: [npoints][nfeatures] *\/$/;"	f
+kmeans_kernel_wrapper	src/krnl_kmeans.cpp	/^void kmeans_kernel_wrapper(unsigned int* features,$/;"	f
+load_clusters	src/krnl_kmeans.cpp	/^void load_clusters(unsigned int l_clusters[L_CLUSTERS_SZ], ap_int<512>* clusters, int nclusters, int nfeatures) {$/;"	f
+load_features	src/krnl_kmeans.cpp	/^void load_features(unsigned int l_features[PARALLEL_POINTS][CONST_NFEATURES],$/;"	f
+m_buf_centers	src/fpga_kmeans.h	/^    cl::Buffer m_buf_centers[NUM_CU];$/;"	m	class:FPGA_KMEANS
+m_buf_centers_sz	src/fpga_kmeans.h	/^    unsigned int m_buf_centers_sz;$/;"	m	class:FPGA_KMEANS
+m_buf_cluster	src/fpga_kmeans.h	/^    cl::Buffer m_buf_cluster;$/;"	m	class:FPGA_KMEANS
+m_buf_cluster_sz	src/fpga_kmeans.h	/^    unsigned int m_buf_cluster_sz;$/;"	m	class:FPGA_KMEANS
+m_buf_feature	src/fpga_kmeans.h	/^    cl::Buffer m_buf_feature;$/;"	m	class:FPGA_KMEANS
+m_buf_feature_sz	src/fpga_kmeans.h	/^    unsigned int m_buf_feature_sz;$/;"	m	class:FPGA_KMEANS
+m_buf_members	src/fpga_kmeans.h	/^    cl::Buffer m_buf_members;$/;"	m	class:FPGA_KMEANS
+m_buf_members_sz	src/fpga_kmeans.h	/^    unsigned int m_buf_members_sz;$/;"	m	class:FPGA_KMEANS
+m_context	src/fpga_kmeans.h	/^    cl::Context m_context;$/;"	m	class:FPGA_KMEANS
+m_end	src/timer.h	/^    std::chrono::high_resolution_clock::time_point m_end;$/;"	m	struct:cPerfTimer
+m_kernel_kmeans	src/fpga_kmeans.h	/^    cl::Kernel m_kernel_kmeans[NUM_CU];$/;"	m	class:FPGA_KMEANS
+m_name	src/timer.h	/^    std::string m_name;$/;"	m	struct:cPerfTimer
+m_nclusters	src/fpga_kmeans.h	/^    unsigned int m_nclusters;$/;"	m	class:FPGA_KMEANS
+m_new_centers	src/fpga_kmeans.h	/^    unsigned int* m_new_centers[NUM_CU];$/;"	m	class:FPGA_KMEANS
+m_new_memberships	src/fpga_kmeans.h	/^    int* m_new_memberships;$/;"	m	class:FPGA_KMEANS
+m_nfeatures	src/fpga_kmeans.h	/^    unsigned int m_nfeatures;$/;"	m	class:FPGA_KMEANS
+m_npoints	src/fpga_kmeans.h	/^    unsigned int m_npoints;$/;"	m	class:FPGA_KMEANS
+m_num_cu_calls	src/fpga_kmeans.h	/^    unsigned int m_num_cu_calls;$/;"	m	class:FPGA_KMEANS
+m_num_points_per_cu	src/fpga_kmeans.h	/^    unsigned int m_num_points_per_cu;$/;"	m	class:FPGA_KMEANS
+m_prog	src/fpga_kmeans.h	/^    cl::Program m_prog;$/;"	m	class:FPGA_KMEANS
+m_q	src/fpga_kmeans.h	/^    cl::CommandQueue m_q;$/;"	m	class:FPGA_KMEANS
+m_scaled_clusters	src/fpga_kmeans.h	/^    unsigned int* m_scaled_clusters;$/;"	m	class:FPGA_KMEANS
+m_scaled_feature	src/fpga_kmeans.h	/^    unsigned int* m_scaled_feature;$/;"	m	class:FPGA_KMEANS
+m_start	src/timer.h	/^    std::chrono::high_resolution_clock::time_point m_start;$/;"	m	struct:cPerfTimer
+m_total	src/timer.h	/^    std::chrono::duration<double> m_total;$/;"	m	struct:cPerfTimer
+main	src/host.cpp	/^int main(int argc, char** argv) {$/;"	f
+min	src/krnl_kmeans.cpp	33;"	d	file:
+min_dist	src/krnl_kmeans.cpp	/^    unsigned long min_dist;$/;"	m	struct:point_dist_t	file:
+point_dist_t	src/krnl_kmeans.cpp	/^struct point_dist_t {$/;"	s	file:
+proc_memberships	src/krnl_kmeans.cpp	/^void proc_memberships(hls::stream<unsigned int> index_str[PARALLEL_POINTS],$/;"	f
+proc_new_centers	src/krnl_kmeans.cpp	/^void proc_new_centers(ap_int<512>* membership,$/;"	f
+scale_and_remap_features	src/fpga_kmeans.cpp	/^void scale_and_remap_features($/;"	f
+scale_clusters	src/fpga_kmeans.cpp	/^void scale_clusters(unsigned int* scaled, float** clusters, int n, float scale_factor) {$/;"	f
+scale_features	src/fpga_kmeans.cpp	/^void scale_features(unsigned int* scaled, float** features, int n, float scale_factor) {$/;"	f
+start	src/timer.h	/^    void start() { m_start = std::chrono::high_resolution_clock::now(); }$/;"	f	struct:cPerfTimer
+stop	src/timer.h	/^    void stop() {$/;"	f	struct:cPerfTimer
+store_centers	src/krnl_kmeans.cpp	/^void store_centers(ap_int<512>* new_centers, unsigned int l_new_centers[L_CLUSTERS_SZ], int nclusters, int nfeatures) {$/;"	f
+store_memberships	src/krnl_kmeans.cpp	/^void store_memberships(ap_int<512>* membership,$/;"	f
+update_dist	src/krnl_kmeans.cpp	/^    void update_dist(unsigned long point_value, unsigned int cluster_value) {$/;"	f	struct:point_dist_t
+update_index	src/krnl_kmeans.cpp	/^    void update_index(index_t cluster_id) {$/;"	f	struct:point_dist_t

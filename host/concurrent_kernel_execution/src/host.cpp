@@ -425,6 +425,18 @@ void dd_single_test(cl::Context& context,
     std::cout << "single: FPGA computation (mscale) latencies: " << eval_time() << "us" <<std::endl;
 
 
+    vector<int, aligned_allocator<int> > host_A(array_size, 1);
+    vector<int, aligned_allocator<int> > host_B(array_size, 1);
+    vector<int, aligned_allocator<int> > host_D(array_size, 1);
+    vector<int, aligned_allocator<int> > host_E(array_size, 1);
+
+    begin_time();
+    host_mscale(host_A.data(), matrix_scale_factor, MAT_DIM0, MAT_DIM1);
+    //Dd: eval the end time
+    std::cout << "single: FPGA computation (mscale) latencies: " << eval_time() << "us" <<std::endl;
+
+
+
     //Add
     begin_time();
 
