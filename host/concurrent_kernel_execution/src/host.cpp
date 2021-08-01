@@ -141,8 +141,8 @@ void event_cb(cl_event event1, cl_int cmd_status, void* data) {
             status_str = "Completed";
             break;
     }
-    printf("%s %s %s\n", status_str, reinterpret_cast<char*>(data), command_str);
-    fflush(stdout);
+    //printf("%s %s %s\n", status_str, reinterpret_cast<char*>(data), command_str);
+    //fflush(stdout);
 }
 
 // Sets the callback for a particular event
@@ -375,6 +375,125 @@ void out_of_order_queue(cl::Context& context,
     verify_results(C, F);
 }
 
+void dd_single_test(cl::Context& context,
+                        cl::Device& device,
+                        cl::Kernel& kernel_mscale,
+                        cl::Kernel& kernel_madd,
+                        cl::Kernel& kernel_mmult,
+                        cl::Buffer& buffer_a,
+                        cl::Buffer& buffer_b,
+                        cl::Buffer& buffer_c,
+                        cl::Buffer& buffer_d,
+                        cl::Buffer& buffer_e,
+                        cl::Buffer& buffer_f,
+                        size_t size_in_bytes) {
+    cl_int err;
+    OCL_CHECK(err, cl::CommandQueue ordered_queue(context, device, CL_QUEUE_PROFILING_ENABLE, &err));
+
+    // Clear values in the result buffers
+    {
+        int zero = 0;
+        int one = 1;
+        vector<cl::Event> fill_events(3);
+        OCL_CHECK(err, err = ordered_queue.enqueueFillBuffer(buffer_a, one, 0, size_in_bytes, nullptr, &fill_events[0]));
+        OCL_CHECK(err, err = ordered_queue.enqueueFillBuffer(buffer_c, zero, 0, size_in_bytes, nullptr, &fill_events[1]));
+        OCL_CHECK(err, err = ordered_queue.enqueueFillBuffer(buffer_f, zero, 0, size_in_bytes, nullptr, &fill_events[2]));
+        OCL_CHECK(err, err = cl::Event::waitForEvents(fill_events));
+    }
+
+    // copy the input arrays to input memory allocated on the accelerator
+    // devices
+
+    //Scale
+    begin_time();
+    const int matrix_scale_factor = 2;
+    OCL_CHECK(err, err = kernel_mscale.setArg(0, buffer_a));
+    OCL_CHECK(err, err = kernel_mscale.setArg(1, matrix_scale_factor));
+    OCL_CHECK(err, err = kernel_mscale.setArg(2, MAT_DIM0));
+    OCL_CHECK(err, err = kernel_mscale.setArg(3, MAT_DIM1));
+
+    vector<cl::Event> kernel_events(1);
+
+
+    //printf("[Ordered Queue 1]: Enqueueing scale kernel\n");
+    OCL_CHECK(err, err = ordered_queue.enqueueNDRangeKernel(kernel_mscale, offset, global, local, nullptr,
+                                                             &kernel_events[0]));
+    set_callback(kernel_events[0], "scale");
+
+    OCL_CHECK(err, err = cl::Event::waitForEvents(kernel_events));
+    //Dd: eval the end time
+    std::cout << "single: FPGA computation (mscale) latencies: " << eval_time() << "us" <<std::endl;
+
+
+    //Add
+    begin_time();
+
+    OCL_CHECK(err, err = kernel_madd.setArg(0, buffer_c));
+    OCL_CHECK(err, err = kernel_madd.setArg(1, buffer_a));
+    OCL_CHECK(err, err = kernel_madd.setArg(2, buffer_b));
+    OCL_CHECK(err, err = kernel_madd.setArg(3, MAT_DIM0));
+    OCL_CHECK(err, err = kernel_madd.setArg(4, MAT_DIM1));
+
+    OCL_CHECK(
+        err, err = ordered_queue1.enqueueNDRangeKernel(kernel_madd, offset, global, local, nullptr, &kernel_events[0]));
+
+    set_callback(kernel_events[0], "addition");
+
+    OCL_CHECK(err, err = cl::Event::waitForEvents(kernel_events));
+    //Dd: eval the end time
+    std::cout << "single: FPGA computation (addition) latencies: " << eval_time() << "us" <<std::endl;
+
+
+    //Multiplex
+    begin_time();
+    // set OpenCL kernel parameters to multiply matrix D and E */
+    OCL_CHECK(err, err = kernel_mmult.setArg(0, buffer_f));
+    OCL_CHECK(err, err = kernel_mmult.setArg(1, buffer_d));
+    OCL_CHECK(err, err = kernel_mmult.setArg(2, buffer_e));
+    OCL_CHECK(err, err = kernel_mmult.setArg(3, MAT_DIM0));
+    OCL_CHECK(err, err = kernel_mmult.setArg(4, MAT_DIM1));
+
+    //printf("[Ordered Queue 2]: Enqueueing matrix multiplication kernel\n");
+    OCL_CHECK(err, err = ordered_queue2.enqueueNDRangeKernel(kernel_mmult, offset, global, local, nullptr,
+                                                             &kernel_events[0]));
+    set_callback(kernel_events[0], "matrix multiplication");
+
+    OCL_CHECK(err, err = cl::Event::waitForEvents(kernel_events));
+    //Dd: eval the end time
+    std::cout << "single: FPGA computation (multi) latencies: " << eval_time() << "us" <<std::endl;
+
+    begin_time();
+    const size_t array_size = MAT_DIM0 * MAT_DIM1;
+    vector<int> A(array_size);
+    vector<int> C(array_size);
+    vector<int> F(array_size);
+
+    vector<cl::Event> transfer_events(3);
+    //printf("[Ordered Queue 1]: Enqueueing Read Buffer A\n");
+    OCL_CHECK(err, err = ordered_queue1.enqueueReadBuffer(buffer_a, CL_FALSE, 0, size_in_bytes, A.data(), nullptr,
+                                                          &transfer_events[0]));
+    set_callback(transfer_events[0], "A");
+
+    //printf("[Ordered Queue 1]: Enqueueing Read Buffer C\n");
+    OCL_CHECK(err, err = ordered_queue1.enqueueReadBuffer(buffer_c, CL_FALSE, 0, size_in_bytes, C.data(), nullptr,
+                                                          &transfer_events[1]));
+    set_callback(transfer_events[1], "C");
+
+    //printf("[Ordered Queue 2]: Enqueueing Read Buffer F\n");
+    OCL_CHECK(err, err = ordered_queue2.enqueueReadBuffer(buffer_f, CL_FALSE, 0, size_in_bytes, F.data(), nullptr,
+                                                          &transfer_events[2]));
+    set_callback(transfer_events[2], "F");
+
+    //printf("[Ordered Queue 1]: Waiting\n");
+    //printf("[Ordered Queue 2]: Waiting\n");
+    OCL_CHECK(err, err = cl::Event::waitForEvents(transfer_events));
+
+    //Dd: eval the end time
+    std::cout << "single: last mem transfer latencies: " << eval_time() << "us" <<std::endl;
+
+    //verify_results(C, F);
+}
+
 int main(int argc, char** argv) {
     if (argc != 2) {
         std::cout << "Usage: " << argv[0] << " <XCLBIN File>" << std::endl;
@@ -455,5 +574,14 @@ int main(int argc, char** argv) {
         "details.\n");
 
     printf("TEST PASSED\n");
+
+
+    //Dd: Run standalone cases and the related host CPU costs
+    {
+    	dd_single_test(context, device, kernel_mscale, kernel_madd, kernel_mmult, buffer_a, buffer_b, buffer_c,
+    	                        buffer_d, buffer_e, buffer_f, size_in_bytes);
+    	
+    }
+
     return EXIT_SUCCESS;
 }
