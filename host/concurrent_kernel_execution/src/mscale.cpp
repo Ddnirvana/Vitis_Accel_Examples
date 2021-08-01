@@ -14,7 +14,7 @@
 * under the License.
 */
 
-#define MAX_DIM 640
+#define MAX_DIM 160
 
 // Tripcount identifiers
 const int c_size = MAX_DIM;
