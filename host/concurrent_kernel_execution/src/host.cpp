@@ -435,7 +435,7 @@ void dd_single_test(cl::Context& context,
     OCL_CHECK(err, err = kernel_madd.setArg(4, MAT_DIM1));
 
     OCL_CHECK(
-        err, err = ordered_queue1.enqueueNDRangeKernel(kernel_madd, offset, global, local, nullptr, &kernel_events[0]));
+        err, err = ordered_queue.enqueueNDRangeKernel(kernel_madd, offset, global, local, nullptr, &kernel_events[0]));
 
     set_callback(kernel_events[0], "addition");
 
@@ -454,7 +454,7 @@ void dd_single_test(cl::Context& context,
     OCL_CHECK(err, err = kernel_mmult.setArg(4, MAT_DIM1));
 
     //printf("[Ordered Queue 2]: Enqueueing matrix multiplication kernel\n");
-    OCL_CHECK(err, err = ordered_queue2.enqueueNDRangeKernel(kernel_mmult, offset, global, local, nullptr,
+    OCL_CHECK(err, err = ordered_queue.enqueueNDRangeKernel(kernel_mmult, offset, global, local, nullptr,
                                                              &kernel_events[0]));
     set_callback(kernel_events[0], "matrix multiplication");
 
@@ -470,17 +470,17 @@ void dd_single_test(cl::Context& context,
 
     vector<cl::Event> transfer_events(3);
     //printf("[Ordered Queue 1]: Enqueueing Read Buffer A\n");
-    OCL_CHECK(err, err = ordered_queue1.enqueueReadBuffer(buffer_a, CL_FALSE, 0, size_in_bytes, A.data(), nullptr,
+    OCL_CHECK(err, err = ordered_queue.enqueueReadBuffer(buffer_a, CL_FALSE, 0, size_in_bytes, A.data(), nullptr,
                                                           &transfer_events[0]));
     set_callback(transfer_events[0], "A");
 
     //printf("[Ordered Queue 1]: Enqueueing Read Buffer C\n");
-    OCL_CHECK(err, err = ordered_queue1.enqueueReadBuffer(buffer_c, CL_FALSE, 0, size_in_bytes, C.data(), nullptr,
+    OCL_CHECK(err, err = ordered_queue.enqueueReadBuffer(buffer_c, CL_FALSE, 0, size_in_bytes, C.data(), nullptr,
                                                           &transfer_events[1]));
     set_callback(transfer_events[1], "C");
 
     //printf("[Ordered Queue 2]: Enqueueing Read Buffer F\n");
-    OCL_CHECK(err, err = ordered_queue2.enqueueReadBuffer(buffer_f, CL_FALSE, 0, size_in_bytes, F.data(), nullptr,
+    OCL_CHECK(err, err = ordered_queue.enqueueReadBuffer(buffer_f, CL_FALSE, 0, size_in_bytes, F.data(), nullptr,
                                                           &transfer_events[2]));
     set_callback(transfer_events[2], "F");
 
