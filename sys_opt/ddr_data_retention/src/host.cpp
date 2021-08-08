@@ -225,7 +225,7 @@ int baseline_main(int argc, char** argv) {
     // are automatically released once the block ends
 
     OCL_CHECK(err,
-              cl::Buffer d_mul(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, sizeof(int) * LENGTH, NULL, &err));
+              cl::Buffer d_mul(context, CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY, sizeof(int) * LENGTH, h_temp.data(), &err));
 
     {
         OCL_CHECK(err, cl::Buffer d_a(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * LENGTH, h_a.data(),
@@ -261,6 +261,8 @@ int baseline_main(int argc, char** argv) {
     {
         OCL_CHECK(err, cl::Buffer d_add(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, sizeof(int) * LENGTH,
                                         h_c.data(), &err));
+    	OCL_CHECK(err,
+       		       cl::Buffer d_mul_in(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * LENGTH, h_temp.data(), &err));
         std::cout << "INFO: loading vadd_krnl" << std::endl;
         auto vaddBinaryFile = binaryFile2.c_str();
         auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
@@ -270,18 +272,18 @@ int baseline_main(int argc, char** argv) {
 
 	begin_time();
 
-        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul));
-        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul));
+        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul_in));
+        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul_in));
         OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
         OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
 
 	//DD: copy from host
-        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_mul}, 0 /* 0 means from host*/));
+        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_mul_in}, 0 /* 0 means from host*/));
 
         // This function will execute the kernel on the FPGA
         OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
 
-        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_mul}, CL_MIGRATE_MEM_OBJECT_HOST));
+        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
         OCL_CHECK(err, err = q.finish());
 	std::cout << "func-2 latency: " << eval_time()<< "us" << std::endl;
 
