@@ -177,7 +177,7 @@ int opt_main(int argc, char** argv) {
         OCL_CHECK(err, cl::Buffer d_add(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, sizeof(int) * LENGTH,
                                         h_c.data(), &err));
         //std::cout << "INFO: loading vadd_krnl" << std::endl;
-        auto vaddBinaryFile = binaryFile2.c_str();
+        auto vaddBinaryFile = binaryFile1.c_str();
         auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
         cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
         OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
@@ -243,7 +243,7 @@ int opt_main(int argc, char** argv) {
         OCL_CHECK(err, cl::Buffer d_add(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, sizeof(int) * LENGTH,
                                         h_c.data(), &err));
         //std::cout << "INFO: loading vadd_krnl" << std::endl;
-        auto vaddBinaryFile = binaryFile2.c_str();
+        auto vaddBinaryFile = binaryFile1.c_str();
         auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
         cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
         OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
@@ -412,7 +412,7 @@ int baseline_main(int argc, char** argv) {
     	OCL_CHECK(err,
        		       cl::Buffer d_mul_in(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * LENGTH, h_temp.data(), &err));
         std::cout << "INFO: loading vmul_krnl" << std::endl;
-        auto vaddBinaryFile = binaryFile2.c_str();
+        auto vaddBinaryFile = binaryFile1.c_str();
         auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
         cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
         OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
@@ -476,7 +476,7 @@ int baseline_main(int argc, char** argv) {
     	OCL_CHECK(err,
        		       cl::Buffer d_mul_in(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * LENGTH, h_temp.data(), &err));
         std::cout << "INFO: loading vmul_krnl" << std::endl;
-        auto vaddBinaryFile = binaryFile2.c_str();
+        auto vaddBinaryFile = binaryFile1.c_str();
         auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
         cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
         OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
