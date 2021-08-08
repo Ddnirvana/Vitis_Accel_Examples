@@ -177,25 +177,25 @@ int opt_main(int argc, char** argv) {
         OCL_CHECK(err, cl::Buffer d_add(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, sizeof(int) * LENGTH,
                                         h_c.data(), &err));
         //std::cout << "INFO: loading vadd_krnl" << std::endl;
-        auto vaddBinaryFile = binaryFile1.c_str();
+        auto vaddBinaryFile = binaryFile2.c_str();
         auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
         cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
         OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
-        OCL_CHECK(err, cl::Kernel krnl_vmul(program, "krnl_vmul", &err));
+        OCL_CHECK(err, cl::Kernel krnl_vadd(program, "krnl_vadd", &err));
 
 	begin_time();
 
-        OCL_CHECK(err, krnl_vmul.setArg(0, d_mul));
-        OCL_CHECK(err, krnl_vmul.setArg(1, d_mul));
+        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul));
+        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul));
 #ifndef TEST_4FUNC
-        OCL_CHECK(err, krnl_vmul.setArg(2, d_add));
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
 #else
-        OCL_CHECK(err, krnl_vmul.setArg(2, d_mul)); //write to the internal buffer otherwise
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_mul)); //write to the internal buffer otherwise
 #endif
-        OCL_CHECK(err, krnl_vmul.setArg(3, vector_length));
+        OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
 
         // This function will execute the kernel on the FPGA
-        OCL_CHECK(err, err = q.enqueueTask(krnl_vmul));
+        OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
 
 #ifndef TEST_4FUNC //do not copy when the data is not finished
         OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
@@ -243,21 +243,21 @@ int opt_main(int argc, char** argv) {
         OCL_CHECK(err, cl::Buffer d_add(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, sizeof(int) * LENGTH,
                                         h_c.data(), &err));
         //std::cout << "INFO: loading vadd_krnl" << std::endl;
-        auto vaddBinaryFile = binaryFile1.c_str();
+        auto vaddBinaryFile = binaryFile2.c_str();
         auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
         cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
         OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
-        OCL_CHECK(err, cl::Kernel krnl_vmul(program, "krnl_vmul", &err));
+        OCL_CHECK(err, cl::Kernel krnl_vadd(program, "krnl_vadd", &err));
 
 	begin_time();
 
-        OCL_CHECK(err, krnl_vmul.setArg(0, d_mul));
-        OCL_CHECK(err, krnl_vmul.setArg(1, d_mul));
-        OCL_CHECK(err, krnl_vmul.setArg(2, d_add));
-        OCL_CHECK(err, krnl_vmul.setArg(3, vector_length));
+        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul));
+        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul));
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
+        OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
 
         // This function will execute the kernel on the FPGA
-        OCL_CHECK(err, err = q.enqueueTask(krnl_vmul));
+        OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
 
         OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
         OCL_CHECK(err, err = q.finish());
@@ -411,25 +411,25 @@ int baseline_main(int argc, char** argv) {
                                         h_c.data(), &err));
     	OCL_CHECK(err,
        		       cl::Buffer d_mul_in(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * LENGTH, h_temp.data(), &err));
-        std::cout << "INFO: loading vmul_krnl" << std::endl;
-        auto vaddBinaryFile = binaryFile1.c_str();
+        std::cout << "INFO: loading vadd_krnl" << std::endl;
+        auto vaddBinaryFile = binaryFile2.c_str();
         auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
         cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
         OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
-        OCL_CHECK(err, cl::Kernel krnl_vmul(program, "krnl_vmul", &err));
+        OCL_CHECK(err, cl::Kernel krnl_vadd(program, "krnl_vadd", &err));
 
 	begin_time();
 
-        OCL_CHECK(err, krnl_vmul.setArg(0, d_mul_in));
-        OCL_CHECK(err, krnl_vmul.setArg(1, d_mul_in));
-        OCL_CHECK(err, krnl_vmul.setArg(2, d_add));
-        OCL_CHECK(err, krnl_vmul.setArg(3, vector_length));
+        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul_in));
+        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul_in));
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
+        OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
 
 	//DD: copy from host
         OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_mul_in}, 0 /* 0 means from host*/));
 
         // This function will execute the kernel on the FPGA
-        OCL_CHECK(err, err = q.enqueueTask(krnl_vmul));
+        OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
 
         OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
         OCL_CHECK(err, err = q.finish());
@@ -475,25 +475,25 @@ int baseline_main(int argc, char** argv) {
                                         h_c.data(), &err));
     	OCL_CHECK(err,
        		       cl::Buffer d_mul_in(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * LENGTH, h_temp.data(), &err));
-        std::cout << "INFO: loading vmul_krnl" << std::endl;
-        auto vaddBinaryFile = binaryFile1.c_str();
+        std::cout << "INFO: loading vadd_krnl" << std::endl;
+        auto vaddBinaryFile = binaryFile2.c_str();
         auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
         cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
         OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
-        OCL_CHECK(err, cl::Kernel krnl_vmul(program, "krnl_vmul", &err));
+        OCL_CHECK(err, cl::Kernel krnl_vadd(program, "krnl_vadd", &err));
 
 	begin_time();
 
-        OCL_CHECK(err, krnl_vmul.setArg(0, d_mul_in));
-        OCL_CHECK(err, krnl_vmul.setArg(1, d_mul_in));
-        OCL_CHECK(err, krnl_vmul.setArg(2, d_add));
-        OCL_CHECK(err, krnl_vmul.setArg(3, vector_length));
+        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul_in));
+        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul_in));
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
+        OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
 
 	//DD: copy from host
         OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_mul_in}, 0 /* 0 means from host*/));
 
         // This function will execute the kernel on the FPGA
-        OCL_CHECK(err, err = q.enqueueTask(krnl_vmul));
+        OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
 
         OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
         OCL_CHECK(err, err = q.finish());
