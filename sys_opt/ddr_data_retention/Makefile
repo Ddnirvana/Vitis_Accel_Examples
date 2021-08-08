@@ -93,9 +93,9 @@ endif
 ifeq ($(findstring 2018, $(DEVICE)), 2018)
 $(error [ERROR]: This example is not supported for $(DEVICE).)
 endif
-ifeq ($(findstring 2019, $(DEVICE)), 2019)
-$(error [ERROR]: This example is not supported for $(DEVICE).)
-endif
+#ifeq ($(findstring 2019, $(DEVICE)), 2019)
+#$(error [ERROR]: This example is not supported for $(DEVICE).)
+#endif
 ifeq ($(findstring vck, $(DEVICE)), vck)
 $(error [ERROR]: This example is not supported for $(DEVICE).)
 endif

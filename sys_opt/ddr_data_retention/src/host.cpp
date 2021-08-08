@@ -16,6 +16,7 @@
 #include "cmdlineparser.h"
 #include "xcl2.hpp"
 #include <vector>
+#include <sys/time.h>
 
 #define LENGTH 1024
 
