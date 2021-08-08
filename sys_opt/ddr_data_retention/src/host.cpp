@@ -20,6 +20,12 @@
 
 #define LENGTH 1024
 
+//CONFIGS, defaultly it will test at-least 2 funcs, choose any more functions, by uncomment the following lines
+#define TEST_3FUNC true
+//#define TEST_4FUNC
+//#define TEST_5func
+
+
 static struct timeval begin_tv; //We only allow sequentially measurements
 
 void begin_time(){
@@ -137,13 +143,19 @@ int opt_main(int argc, char** argv) {
 
         OCL_CHECK(err, krnl_vadd.setArg(0, d_mul));
         OCL_CHECK(err, krnl_vadd.setArg(1, d_mul));
+#ifndef TEST_3FUNC
         OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
+#else
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_mul)); //write to the internal buffer otherwise
+#endif
         OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
 
         // This function will execute the kernel on the FPGA
         OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
 
+#ifndef TEST_3FUNC //do not copy when the data is not finished
         OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
+#endif
         OCL_CHECK(err, err = q.finish());
 	std::cout << "func-2 latency: " << eval_time()<< "us" << std::endl;
 
@@ -159,6 +171,101 @@ int opt_main(int argc, char** argv) {
         }
 #endif
     }
+
+#ifdef TEST_3FUNC
+    {
+        OCL_CHECK(err, cl::Buffer d_add(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, sizeof(int) * LENGTH,
+                                        h_c.data(), &err));
+        //std::cout << "INFO: loading vadd_krnl" << std::endl;
+        auto vaddBinaryFile = binaryFile2.c_str();
+        auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
+        cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
+        OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
+        OCL_CHECK(err, cl::Kernel krnl_vadd(program, "krnl_vadd", &err));
+
+	begin_time();
+
+        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul));
+        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul));
+#ifndef TEST_4FUNC
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
+#else
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_mul)); //write to the internal buffer otherwise
+#endif
+        OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
+
+        // This function will execute the kernel on the FPGA
+        OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
+
+#ifndef TEST_4FUNC //do not copy when the data is not finished
+        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
+#endif
+        OCL_CHECK(err, err = q.finish());
+	std::cout << "func-3 latency: " << eval_time()<< "us" << std::endl;
+    }
+#endif
+
+#ifdef TEST_4FUNC
+    {
+        OCL_CHECK(err, cl::Buffer d_add(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, sizeof(int) * LENGTH,
+                                        h_c.data(), &err));
+        //std::cout << "INFO: loading vadd_krnl" << std::endl;
+        auto vaddBinaryFile = binaryFile2.c_str();
+        auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
+        cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
+        OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
+        OCL_CHECK(err, cl::Kernel krnl_vadd(program, "krnl_vadd", &err));
+
+	begin_time();
+
+        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul));
+        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul));
+#ifndef TEST_5FUNC
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
+#else
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_mul)); //write to the internal buffer otherwise
+#endif
+        OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
+
+        // This function will execute the kernel on the FPGA
+        OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
+
+#ifndef TEST_5FUNC //do not copy when the data is not finished
+        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
+#endif
+        OCL_CHECK(err, err = q.finish());
+	std::cout << "func-4 latency: " << eval_time()<< "us" << std::endl;
+    }
+#endif
+
+#ifdef TEST_5FUNC
+    {
+        OCL_CHECK(err, cl::Buffer d_add(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, sizeof(int) * LENGTH,
+                                        h_c.data(), &err));
+        //std::cout << "INFO: loading vadd_krnl" << std::endl;
+        auto vaddBinaryFile = binaryFile2.c_str();
+        auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
+        cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
+        OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
+        OCL_CHECK(err, cl::Kernel krnl_vadd(program, "krnl_vadd", &err));
+
+	begin_time();
+
+        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul));
+        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul));
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
+        OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
+
+        // This function will execute the kernel on the FPGA
+        OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
+
+        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
+        OCL_CHECK(err, err = q.finish());
+	std::cout << "func-5 latency: " << eval_time()<< "us" << std::endl;
+    }
+#endif
+
+
 
     std::cout << "TEST " << (match ? "PASSED" : "FAILED") << std::endl;
     return (match ? EXIT_SUCCESS : EXIT_FAILURE);
@@ -297,7 +404,103 @@ int baseline_main(int argc, char** argv) {
             }
         }
     }
-	std::cout << "latency: " << eval_time()<< "us" << std::endl;
+
+#ifdef TEST_3FUNC
+    {
+        OCL_CHECK(err, cl::Buffer d_add(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, sizeof(int) * LENGTH,
+                                        h_c.data(), &err));
+    	OCL_CHECK(err,
+       		       cl::Buffer d_mul_in(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * LENGTH, h_temp.data(), &err));
+        std::cout << "INFO: loading vadd_krnl" << std::endl;
+        auto vaddBinaryFile = binaryFile2.c_str();
+        auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
+        cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
+        OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
+        OCL_CHECK(err, cl::Kernel krnl_vadd(program, "krnl_vadd", &err));
+
+	begin_time();
+
+        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul_in));
+        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul_in));
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
+        OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
+
+	//DD: copy from host
+        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_mul_in}, 0 /* 0 means from host*/));
+
+        // This function will execute the kernel on the FPGA
+        OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
+
+        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
+        OCL_CHECK(err, err = q.finish());
+	std::cout << "func-3 latency: " << eval_time()<< "us" << std::endl;
+    }
+#endif
+
+#ifdef TEST_4FUNC
+    {
+        OCL_CHECK(err, cl::Buffer d_add(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, sizeof(int) * LENGTH,
+                                        h_c.data(), &err));
+    	OCL_CHECK(err,
+       		       cl::Buffer d_mul_in(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * LENGTH, h_temp.data(), &err));
+        std::cout << "INFO: loading vadd_krnl" << std::endl;
+        auto vaddBinaryFile = binaryFile2.c_str();
+        auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
+        cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
+        OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
+        OCL_CHECK(err, cl::Kernel krnl_vadd(program, "krnl_vadd", &err));
+
+	begin_time();
+
+        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul_in));
+        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul_in));
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
+        OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
+
+	//DD: copy from host
+        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_mul_in}, 0 /* 0 means from host*/));
+
+        // This function will execute the kernel on the FPGA
+        OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
+
+        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
+        OCL_CHECK(err, err = q.finish());
+	std::cout << "func-4 latency: " << eval_time()<< "us" << std::endl;
+    }
+#endif
+
+#ifdef TEST_5FUNC
+    {
+        OCL_CHECK(err, cl::Buffer d_add(context, CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR, sizeof(int) * LENGTH,
+                                        h_c.data(), &err));
+    	OCL_CHECK(err,
+       		       cl::Buffer d_mul_in(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * LENGTH, h_temp.data(), &err));
+        std::cout << "INFO: loading vadd_krnl" << std::endl;
+        auto vaddBinaryFile = binaryFile2.c_str();
+        auto fileBuf = xcl::read_binary_file(vaddBinaryFile);
+        cl::Program::Binaries vadd_bins{{fileBuf.data(), fileBuf.size()}};
+        OCL_CHECK(err, cl::Program program(context, devices, vadd_bins, NULL, &err));
+        OCL_CHECK(err, cl::Kernel krnl_vadd(program, "krnl_vadd", &err));
+
+	begin_time();
+
+        OCL_CHECK(err, krnl_vadd.setArg(0, d_mul_in));
+        OCL_CHECK(err, krnl_vadd.setArg(1, d_mul_in));
+        OCL_CHECK(err, krnl_vadd.setArg(2, d_add));
+        OCL_CHECK(err, krnl_vadd.setArg(3, vector_length));
+
+	//DD: copy from host
+        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_mul_in}, 0 /* 0 means from host*/));
+
+        // This function will execute the kernel on the FPGA
+        OCL_CHECK(err, err = q.enqueueTask(krnl_vadd));
+
+        OCL_CHECK(err, err = q.enqueueMigrateMemObjects({d_add}, CL_MIGRATE_MEM_OBJECT_HOST));
+        OCL_CHECK(err, err = q.finish());
+	std::cout << "func-5 latency: " << eval_time()<< "us" << std::endl;
+    }
+#endif
+
 
     std::cout << "TEST " << (match ? "PASSED" : "FAILED") << std::endl;
     return (match ? EXIT_SUCCESS : EXIT_FAILURE);
@@ -307,7 +510,7 @@ int main(int argc, char** argv) {
 	std::cout << "End2End test with data retention:" << std::endl;
 	opt_main(argc, argv);
 
-	std::cout << "End2End test with data retention:" << std::endl;
+	std::cout << "End2End test Baseline:" << std::endl;
 	baseline_main(argc, argv);
 	return 0;
 }
