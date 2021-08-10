@@ -157,7 +157,7 @@ int main(int argc, char** argv) {
     	std::cout << "[FPGA startup breakdown] 6: Program device " << eval_time() << "us"<< std::endl;
 	
         if (err != CL_SUCCESS) {
-            std::cout << "Failed to program device[" << i << "] with xclbin file!\n";
+            std::cout << "Failed to program device[" << i << "] with xclbin file! err" << err<< std::endl;
         } else {
             std::cout << "Device[" << i << "]: program successful!\n";
             OCL_CHECK(err, krnl_vector_add = cl::Kernel(program, "vadd", &err));
