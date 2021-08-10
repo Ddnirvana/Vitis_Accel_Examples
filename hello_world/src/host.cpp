@@ -115,19 +115,27 @@ int main(int argc, char** argv) {
     // OPENCL HOST CODE AREA START
     // get_xil_devices() is a utility API which will find the xilinx
     // platforms and will return list of devices connected to Xilinx platform
+    begin_time();
     auto devices = xcl::get_xil_devices();
+    std::cout << "[FPGA startup breakdown] 1: get_xil_devices " << eval_time() << "us"<< std::endl;
     // read_binary_file() is a utility API which will load the binaryFile
     // and will return the pointer to file buffer.
+    begin_time();
     auto fileBuf = xcl::read_binary_file(binaryFile);
+    std::cout << "[FPGA startup breakdown] 2: read_binary_file " << eval_time() << "us"<< std::endl;
+    begin_time();
     cl::Program::Binaries bins{{fileBuf.data(), fileBuf.size()}};
+    std::cout << "[FPGA startup breakdown] 3: init Binaries " << eval_time() << "us"<< std::endl;
     bool valid_device = false;
     for (unsigned int i = 0; i < devices.size(); i++) {
+    	begin_time();
         auto device = devices[i];
         // Creating Context and Command Queue for selected Device
         OCL_CHECK(err, context = cl::Context(device, nullptr, nullptr, nullptr, &err));
         OCL_CHECK(err, q = cl::CommandQueue(context, device, CL_QUEUE_PROFILING_ENABLE, &err));
-        std::cout << "Trying to program device[" << i << "]: " << device.getInfo<CL_DEVICE_NAME>() << std::endl;
+        //std::cout << "Trying to program device[" << i << "]: " << device.getInfo<CL_DEVICE_NAME>() << std::endl;
         cl::Program program(context, {device}, bins, nullptr, &err);
+    	std::cout << "[FPGA startup breakdown] 4: Init context and program device " << eval_time() << "us"<< std::endl;
         if (err != CL_SUCCESS) {
             std::cout << "Failed to program device[" << i << "] with xclbin file!\n";
         } else {
