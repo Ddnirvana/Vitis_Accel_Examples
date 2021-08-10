@@ -35,7 +35,7 @@ unsigned long eval_time(){
 }
 
 int main(int argc, char** argv) {
-    if (argc != 2) {
+    if (argc <2) {
         std::cout << "Usage: " << argv[0] << " <XCLBIN File>" << std::endl;
         return EXIT_FAILURE;
     }
@@ -46,6 +46,10 @@ int main(int argc, char** argv) {
     cl::Context context;
     cl::Kernel krnl_vector_add;
     cl::CommandQueue q;
+    int warm_boot=0;
+
+    if (argc==3)
+	    warm_boot = 1;
     // Allocate Memory in Host Memory
     // When creating a buffer with user pointer (CL_MEM_USE_HOST_PTR), under the
     // hood user ptr
@@ -138,9 +142,11 @@ int main(int argc, char** argv) {
     	std::cout << "[FPGA startup breakdown] 5: Init CommondQueue " << eval_time() << "us"<< std::endl;
         //std::cout << "Trying to program device[" << i << "]: " << device.getInfo<CL_DEVICE_NAME>() << std::endl;
     	begin_time();
-        cl::Program program(context, {device}, bins, nullptr, &err);
+	if (!warm_boot)
+	        cl::Program program(context, {device}, bins, nullptr, &err);
     	std::cout << "[FPGA startup breakdown] 6: Program device " << eval_time() << "us"<< std::endl;
-        if (err != CL_SUCCESS) {
+	
+        if (!warm_boot && err != CL_SUCCESS) {
             std::cout << "Failed to program device[" << i << "] with xclbin file!\n";
         } else {
             std::cout << "Device[" << i << "]: program successful!\n";
