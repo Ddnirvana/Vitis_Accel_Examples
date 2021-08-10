@@ -142,11 +142,13 @@ int main(int argc, char** argv) {
     	std::cout << "[FPGA startup breakdown] 5: Init CommondQueue " << eval_time() << "us"<< std::endl;
         //std::cout << "Trying to program device[" << i << "]: " << device.getInfo<CL_DEVICE_NAME>() << std::endl;
     	begin_time();
-	if (!warm_boot)
+	if (warm_boot)
+	        cl::Program program(context, {device}, {"vadd"}, &err);
+	else
 	        cl::Program program(context, {device}, bins, nullptr, &err);
     	std::cout << "[FPGA startup breakdown] 6: Program device " << eval_time() << "us"<< std::endl;
 	
-        if (!warm_boot && err != CL_SUCCESS) {
+        if (err != CL_SUCCESS) {
             std::cout << "Failed to program device[" << i << "] with xclbin file!\n";
         } else {
             std::cout << "Device[" << i << "]: program successful!\n";
