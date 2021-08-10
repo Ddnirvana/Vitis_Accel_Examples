@@ -132,10 +132,14 @@ int main(int argc, char** argv) {
         auto device = devices[i];
         // Creating Context and Command Queue for selected Device
         OCL_CHECK(err, context = cl::Context(device, nullptr, nullptr, nullptr, &err));
+    	std::cout << "[FPGA startup breakdown] 4: Init context " << eval_time() << "us"<< std::endl;
+    	begin_time();
         OCL_CHECK(err, q = cl::CommandQueue(context, device, CL_QUEUE_PROFILING_ENABLE, &err));
+    	std::cout << "[FPGA startup breakdown] 5: Init CommondQueue " << eval_time() << "us"<< std::endl;
         //std::cout << "Trying to program device[" << i << "]: " << device.getInfo<CL_DEVICE_NAME>() << std::endl;
+    	begin_time();
         cl::Program program(context, {device}, bins, nullptr, &err);
-    	std::cout << "[FPGA startup breakdown] 4: Init context and program device " << eval_time() << "us"<< std::endl;
+    	std::cout << "[FPGA startup breakdown] 6: Program device " << eval_time() << "us"<< std::endl;
         if (err != CL_SUCCESS) {
             std::cout << "Failed to program device[" << i << "] with xclbin file!\n";
         } else {
