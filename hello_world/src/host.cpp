@@ -150,7 +150,7 @@ int main(int argc, char** argv) {
 	        cl::Program program(context, {device}, bins, nullptr, &err);
 #else
 	if (warm_boot)
-	        program = cl::Program(context, {device}, {"vadd"}, &err);
+	        program = cl::Program(context, {device}, "vadd", &err);
 	else
 	        program = cl::Program(context, {device}, bins, nullptr, &err);
 #endif
