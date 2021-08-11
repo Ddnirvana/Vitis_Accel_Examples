@@ -83,7 +83,7 @@ void function_handler_wrapper(
 	  const int dim1
 	  ) 
 {
-	switch (func_no):{
+	switch (func_no) {
 		case 1:
 			return madd2(c,a,b,dim0,dim1);
 		case 2:
