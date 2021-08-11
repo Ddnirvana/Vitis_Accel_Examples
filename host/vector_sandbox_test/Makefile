@@ -121,17 +121,18 @@ BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd.xo
 BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale.xo
 BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult.xo
 
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd2.xo
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale2.xo
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult2.xo
-
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd3.xo
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale3.xo
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult3.xo
-
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd4.xo
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale4.xo
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult4.xo
+BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/wrapper.xo
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd2.xo
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale2.xo
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult2.xo
+#
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd3.xo
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale3.xo
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult3.xo
+#
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd4.xo
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale4.xo
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult4.xo
 
 ############################## Setting Targets ##############################
 CP = cp -rf
@@ -159,35 +160,38 @@ $(TEMP_DIR)/mmult.xo: src/mmult.cpp
 	mkdir -p $(TEMP_DIR)
 	$(VPP) $(VPP_FLAGS) -c -k mmult --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
 
-$(TEMP_DIR)/madd2.xo: src/madd2.cpp
+$(TEMP_DIR)/wrapper.xo: src/wrapper.cpp src/madd2.cpp src/madd3.cpp src/madd4.cpp src/mscale2.cpp src/mscale3.cpp src/mscale4.cpp src/mmult2.cpp src/mmult3.cpp src/mmult4.cpp
 	mkdir -p $(TEMP_DIR)
-	$(VPP) $(VPP_FLAGS) -c -k madd2 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
-$(TEMP_DIR)/mscale2.xo: src/mscale2.cpp
-	mkdir -p $(TEMP_DIR)
-	$(VPP) $(VPP_FLAGS) -c -k mscale2 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
-$(TEMP_DIR)/mmult2.xo: src/mmult2.cpp
-	mkdir -p $(TEMP_DIR)
-	$(VPP) $(VPP_FLAGS) -c -k mmult2 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
-
-$(TEMP_DIR)/madd3.xo: src/madd3.cpp
-	mkdir -p $(TEMP_DIR)
-	$(VPP) $(VPP_FLAGS) -c -k madd3 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
-$(TEMP_DIR)/mscale3.xo: src/mscale3.cpp
-	mkdir -p $(TEMP_DIR)
-	$(VPP) $(VPP_FLAGS) -c -k mscale3 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
-$(TEMP_DIR)/mmult3.xo: src/mmult3.cpp
-	mkdir -p $(TEMP_DIR)
-	$(VPP) $(VPP_FLAGS) -c -k mmult3 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
-
-$(TEMP_DIR)/madd4.xo: src/madd4.cpp
-	mkdir -p $(TEMP_DIR)
-	$(VPP) $(VPP_FLAGS) -c -k madd4 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
-$(TEMP_DIR)/mscale4.xo: src/mscale4.cpp
-	mkdir -p $(TEMP_DIR)
-	$(VPP) $(VPP_FLAGS) -c -k mscale4 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
-$(TEMP_DIR)/mmult4.xo: src/mmult4.cpp
-	mkdir -p $(TEMP_DIR)
-	$(VPP) $(VPP_FLAGS) -c -k mmult4 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
+	$(VPP) $(VPP_FLAGS) -c -k mmult --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
+#$(TEMP_DIR)/madd2.xo: src/madd2.cpp
+#	mkdir -p $(TEMP_DIR)
+#	$(VPP) $(VPP_FLAGS) -c -k madd2 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
+#$(TEMP_DIR)/mscale2.xo: src/mscale2.cpp
+#	mkdir -p $(TEMP_DIR)
+#	$(VPP) $(VPP_FLAGS) -c -k mscale2 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
+#$(TEMP_DIR)/mmult2.xo: src/mmult2.cpp
+#	mkdir -p $(TEMP_DIR)
+#	$(VPP) $(VPP_FLAGS) -c -k mmult2 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
+#
+#$(TEMP_DIR)/madd3.xo: src/madd3.cpp
+#	mkdir -p $(TEMP_DIR)
+#	$(VPP) $(VPP_FLAGS) -c -k madd3 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
+#$(TEMP_DIR)/mscale3.xo: src/mscale3.cpp
+#	mkdir -p $(TEMP_DIR)
+#	$(VPP) $(VPP_FLAGS) -c -k mscale3 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
+#$(TEMP_DIR)/mmult3.xo: src/mmult3.cpp
+#	mkdir -p $(TEMP_DIR)
+#	$(VPP) $(VPP_FLAGS) -c -k mmult3 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
+#
+#$(TEMP_DIR)/madd4.xo: src/madd4.cpp
+#	mkdir -p $(TEMP_DIR)
+#	$(VPP) $(VPP_FLAGS) -c -k madd4 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
+#$(TEMP_DIR)/mscale4.xo: src/mscale4.cpp
+#	mkdir -p $(TEMP_DIR)
+#	$(VPP) $(VPP_FLAGS) -c -k mscale4 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
+#$(TEMP_DIR)/mmult4.xo: src/mmult4.cpp
+#	mkdir -p $(TEMP_DIR)
+#	$(VPP) $(VPP_FLAGS) -c -k mmult4 --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
 
 
 $(BUILD_DIR)/matrix_ops.xclbin: $(BINARY_CONTAINER_matrix_ops_OBJS)
