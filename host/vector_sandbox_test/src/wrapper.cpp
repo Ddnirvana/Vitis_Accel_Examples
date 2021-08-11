@@ -73,7 +73,8 @@ void mmult4(int* c, int* a, const int* b, const int dim0, const int dim1);
  * The first argument is always the function_no,
  * The remaining arguments are big set of all included functions
  * */
-void function_handler_wrapper(
+//function_handler_wrapper
+void funcwrapper(
 	  int func_no,
           hls::vector<unsigned int, PARALLEL>* c,
           hls::vector<unsigned int, PARALLEL>* a,
