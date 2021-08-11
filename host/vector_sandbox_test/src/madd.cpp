@@ -89,9 +89,9 @@ void madd(hls::vector<unsigned int, PARALLEL>* c,
 	  const int dim0,
 	  const int dim1) 
 {
-//#pragma HLS INTERFACE m_axi port = c bundle = gmem0
-//#pragma HLS INTERFACE m_axi port = a bundle = gmem0
-//#pragma HLS INTERFACE m_axi port = b bundle = gmem1
+#pragma HLS INTERFACE m_axi port = c bundle = gmem0
+#pragma HLS INTERFACE m_axi port = a bundle = gmem0
+#pragma HLS INTERFACE m_axi port = b bundle = gmem1
     static hls::stream<hls::vector<unsigned int, PARALLEL> > in1_stream("input_stream_1");
     static hls::stream<hls::vector<unsigned int, PARALLEL> > in2_stream("input_stream_2");
     static hls::stream<hls::vector<unsigned int, PARALLEL> > out_stream("output_stream");

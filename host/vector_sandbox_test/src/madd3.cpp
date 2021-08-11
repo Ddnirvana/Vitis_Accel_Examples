@@ -57,8 +57,8 @@ execute:
 }
 
 extern "C" {
-#if 0
-void madd(int* c, int* a, int* b, const int dim0, const int dim1) {
+#if 1
+void madd3(int* c, int* a, int* b, const int dim0, const int dim1) {
     int matA[MAX_DIM * MAX_DIM];
     int matB[MAX_DIM * MAX_DIM];
 

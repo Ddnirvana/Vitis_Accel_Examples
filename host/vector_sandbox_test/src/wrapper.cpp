@@ -29,21 +29,15 @@ extern "C" {
 //Function list
 //
 //1
-void madd2(hls::vector<unsigned int, PARALLEL>* c,
-          hls::vector<unsigned int, PARALLEL>* a,
-          hls::vector<unsigned int, PARALLEL>* b,
+void madd2(int* c, int* a, const int* b, 
 	  const int dim0,
 	  const int dim1);
 //2
-void madd3(hls::vector<unsigned int, PARALLEL>* c,
-          hls::vector<unsigned int, PARALLEL>* a,
-          hls::vector<unsigned int, PARALLEL>* b,
+void madd3(int* c, int* a, const int* b,
 	  const int dim0,
 	  const int dim1);
 //3
-void madd4(hls::vector<unsigned int, PARALLEL>* c,
-          hls::vector<unsigned int, PARALLEL>* a,
-          hls::vector<unsigned int, PARALLEL>* b,
+void madd4(int* c, int* a, const int* b, 
 	  const int dim0,
 	  const int dim1);
 //4
@@ -107,11 +101,11 @@ void funcwrapper(
 	}
 #else
 	if (func_no ==1)
-			return madd2(c,a,b,dim0,dim1);
+			return madd2((int*)c,(int*)a, (int*)b,dim0,dim1);
 	else if (func_no == 2)
-			return madd3(c,a,b,dim0,dim1);
+			return madd3((int*)c, (int*)a, (int*)b,dim0,dim1);
 	else if (func_no == 3)
-			return madd4(c,a,b,dim0,dim1);
+			return madd4((int*)c, (int*)a, (int*)b,dim0,dim1);
 	else if (func_no == 4)
 			return mscale2(c,scale,dim0,dim1);
 	else if (func_no == 5)
