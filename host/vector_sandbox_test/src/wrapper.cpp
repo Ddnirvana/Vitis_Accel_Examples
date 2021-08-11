@@ -118,7 +118,6 @@ void funcwrapper(
 			return mmult3((int*)c, (int*)a, (int*)b,dim0,dim1);
 	else if (func_no == 9)
 			return mmult4((int*)c, (int*)a, (int*)b,dim0,dim1);
-	}
 #endif
 }
 
