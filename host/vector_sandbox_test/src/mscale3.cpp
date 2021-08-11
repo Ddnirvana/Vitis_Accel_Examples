@@ -57,7 +57,6 @@ void mscale3(hls::vector<unsigned int, PARALLEL>* inout_r,
 	  const int dim0,
 	  const int dim1) 
 {
-#pragma HLS INTERFACE m_axi port = inout_r bundle = gmem0
     //static hls::stream<hls::vector<unsigned int, PARALLEL> > in_stream("input_stream_1");
     static hls::stream<hls::vector<unsigned int, PARALLEL> > out_stream("output_stream");
 
