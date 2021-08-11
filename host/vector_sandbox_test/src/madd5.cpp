@@ -58,7 +58,7 @@ execute:
 
 extern "C" {
 #if 1
-void madd(int* c, int* a, int* b, const int dim0, const int dim1) {
+void madd5(int* c, int* a, int* b, const int dim0, const int dim1) {
     int matA[MAX_DIM * MAX_DIM];
     int matB[MAX_DIM * MAX_DIM];
 
@@ -83,15 +83,12 @@ madd_writeC:
 }
 #else
 
-void madd(hls::vector<unsigned int, PARALLEL>* c,
+void madd4(hls::vector<unsigned int, PARALLEL>* c,
           hls::vector<unsigned int, PARALLEL>* a,
           hls::vector<unsigned int, PARALLEL>* b,
 	  const int dim0,
 	  const int dim1) 
 {
-#pragma HLS INTERFACE m_axi port = c bundle = gmem0
-#pragma HLS INTERFACE m_axi port = a bundle = gmem0
-#pragma HLS INTERFACE m_axi port = b bundle = gmem1
     static hls::stream<hls::vector<unsigned int, PARALLEL> > in1_stream("input_stream_1");
     static hls::stream<hls::vector<unsigned int, PARALLEL> > in2_stream("input_stream_2");
     static hls::stream<hls::vector<unsigned int, PARALLEL> > out_stream("output_stream");

@@ -160,7 +160,7 @@ $(TEMP_DIR)/mmult.xo: src/mmult.cpp
 	mkdir -p $(TEMP_DIR)
 	$(VPP) $(VPP_FLAGS) -c -k mmult --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
 
-$(TEMP_DIR)/wrapper.xo: src/wrapper.cpp src/madd2.cpp src/madd3.cpp src/madd4.cpp src/mscale2.cpp src/mscale3.cpp src/mscale4.cpp src/mmult2.cpp src/mmult3.cpp src/mmult4.cpp
+$(TEMP_DIR)/wrapper.xo: src/wrapper.cpp src/madd2.cpp src/madd3.cpp src/madd4.cpp src/mscale2.cpp src/mscale3.cpp src/mscale4.cpp src/mmult2.cpp src/mmult3.cpp src/mmult4.cpp src/madd5.cpp src/mscale5.cpp src/mmult5.cpp
 	mkdir -p $(TEMP_DIR)
 	$(VPP) $(VPP_FLAGS) -c -k funcwrapper --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' $^
 #$(TEMP_DIR)/madd2.xo: src/madd2.cpp

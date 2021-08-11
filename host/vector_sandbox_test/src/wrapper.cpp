@@ -61,6 +61,17 @@ void mmult2(int* c, int* a, const int* b, const int dim0, const int dim1);
 void mmult3(int* c, int* a, const int* b, const int dim0, const int dim1);
 //9
 void mmult4(int* c, int* a, const int* b, const int dim0, const int dim1);
+//10
+void madd5(int* c, int* a, const int* b, 
+	  const int dim0,
+	  const int dim1);
+//11
+void mscale5(hls::vector<unsigned int, PARALLEL>* inout_r,
+		const int scale,
+	  const int dim0,
+	  const int dim1);
+//12
+void mmult5(int* c, int* a, const int* b, const int dim0, const int dim1);
 
 /* 
  * This is a wrapper to dispatch functions,
@@ -118,6 +129,12 @@ void funcwrapper(
 			return mmult3((int*)c, (int*)a, (int*)b,dim0,dim1);
 	else if (func_no == 9)
 			return mmult4((int*)c, (int*)a, (int*)b,dim0,dim1);
+	else if (func_no == 10)
+			return madd5((int*)c, (int*)a, (int*)b,dim0,dim1);
+	else if (func_no == 11)
+			return mscale5(c,scale,dim0,dim1);
+	else if (func_no == 12)
+			return mmult5((int*)c, (int*)a, (int*)b,dim0,dim1);
 #endif
 }
 

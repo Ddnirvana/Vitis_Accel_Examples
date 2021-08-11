@@ -35,7 +35,7 @@ mem_wr:
 }
 
 extern "C" {
-#if 1
+#if 0
 void mscale(int* inout_r, const int scale, const int dim0, const int dim1) {
     int temp[MAX_DIM * MAX_DIM];
 
@@ -52,12 +52,11 @@ mscale_write:
 }
 #else
 
-void mscale(hls::vector<unsigned int, PARALLEL>* inout_r,
+void mscale5(hls::vector<unsigned int, PARALLEL>* inout_r,
 		const int scale,
 	  const int dim0,
 	  const int dim1) 
 {
-#pragma HLS INTERFACE m_axi port = inout_r bundle = gmem0
     //static hls::stream<hls::vector<unsigned int, PARALLEL> > in_stream("input_stream_1");
     static hls::stream<hls::vector<unsigned int, PARALLEL> > out_stream("output_stream");
 
