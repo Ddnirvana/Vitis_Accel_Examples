@@ -84,6 +84,7 @@ void funcwrapper(
 	  const int dim1
 	  ) 
 {
+#if 0
 	switch (func_no) {
 		case 1:
 			return madd2(c,a,b,dim0,dim1);
@@ -104,6 +105,27 @@ void funcwrapper(
 		case 9:
 			return mmult4((int*)c, (int*)a, (int*)b,dim0,dim1);
 	}
+#else
+	if (func_no ==1)
+			return madd2(c,a,b,dim0,dim1);
+	else if (func_no == 2)
+			return madd3(c,a,b,dim0,dim1);
+	else if (func_no == 3)
+			return madd4(c,a,b,dim0,dim1);
+	else if (func_no == 4)
+			return mscale2(c,scale,dim0,dim1);
+	else if (func_no == 5)
+			return mscale3(c,scale,dim0,dim1);
+	else if (func_no == 6)
+			return mscale4(c,scale,dim0,dim1);
+	else if (func_no == 7)
+			return mmult2((int*)c, (int*)a, (int*)b,dim0,dim1);
+	else if (func_no == 8)
+			return mmult3((int*)c, (int*)a, (int*)b,dim0,dim1);
+	else if (func_no == 9)
+			return mmult4((int*)c, (int*)a, (int*)b,dim0,dim1);
+	}
+#endif
 }
 
 }
