@@ -97,11 +97,11 @@ void function_handler_wrapper(
 		case 6:
 			return mscale4(c,scale,dim0,dim1);
 		case 7:
-			return mmult2(c,a,b,dim0,dim1);
+			return mmult2((int*)c, (int*)a, (int*)b,dim0,dim1);
 		case 8:
-			return mmult3(c,a,b,dim0,dim1);
+			return mmult3((int*)c, (int*)a, (int*)b,dim0,dim1);
 		case 9:
-			return mmult4(c,a,b,dim0,dim1);
+			return mmult4((int*)c, (int*)a, (int*)b,dim0,dim1);
 	}
 }
 
