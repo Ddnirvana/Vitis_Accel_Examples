@@ -129,12 +129,14 @@ void funcwrapper(
 			return mmult3((int*)c, (int*)a, (int*)b,dim0,dim1);
 	else if (func_no == 9)
 			return mmult4((int*)c, (int*)a, (int*)b,dim0,dim1);
+#if 0
 	else if (func_no == 10)
 			return madd5((int*)c, (int*)a, (int*)b,dim0,dim1);
 	else if (func_no == 11)
 			return mscale5(c,scale,dim0,dim1);
 	else if (func_no == 12)
 			return mmult5((int*)c, (int*)a, (int*)b,dim0,dim1);
+#endif
 #endif
 }
 
