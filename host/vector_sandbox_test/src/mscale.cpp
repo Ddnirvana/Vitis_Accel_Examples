@@ -35,7 +35,7 @@ mem_wr:
 }
 
 extern "C" {
-#if 1
+#if 0
 void mscale(int* inout_r, const int scale, const int dim0, const int dim1) {
     int temp[MAX_DIM * MAX_DIM];
 
