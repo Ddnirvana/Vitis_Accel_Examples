@@ -117,22 +117,24 @@ EMU_DIR = $(SDCARD)/data/emulation
 
 ############################## Declaring Binary Containers ##############################
 BINARY_CONTAINERS += $(BUILD_DIR)/matrix_ops.xclbin
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd.xo
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale.xo
-BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult.xo
+
+## Note(DD): uncomment these three files when we want to get a baseline data
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd.xo
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale.xo
+#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult.xo
 
 BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/wrapper.xo
-#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd2.xo
-#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale2.xo
-#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult2.xo
-#
-#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd3.xo
-#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale3.xo
-#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult3.xo
-#
-#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd4.xo
-#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale4.xo
-#BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult4.xo
+##BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd2.xo
+##BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale2.xo
+##BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult2.xo
+##
+##BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd3.xo
+##BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale3.xo
+##BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult3.xo
+##
+##BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/madd4.xo
+##BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mscale4.xo
+##BINARY_CONTAINER_matrix_ops_OBJS += $(TEMP_DIR)/mmult4.xo
 
 ############################## Setting Targets ##############################
 CP = cp -rf
